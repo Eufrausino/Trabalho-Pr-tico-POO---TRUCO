@@ -53,6 +53,8 @@ public class Jogador {
             if(indiceEscolhida >= 1 && indiceEscolhida <= i) break;
             else System.err.println("[!] Carta inválida! Escolha novamente");
         }
-        return cartas.remove(indiceEscolhida);
+        Carta c = cartas.remove(indiceEscolhida);
+        c.setEncoberta(coberta);
+        return c;
     }
 }
