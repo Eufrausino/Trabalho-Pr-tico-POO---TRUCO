@@ -12,12 +12,37 @@ public class Carta {
         encoberta = false;
     }
 
+    @Override
+    public String toString() {
+        char naipeTexto;
+        String valorTexto;
+        switch(valor) {
+            case 1:
+                valorTexto = "A";
+                break;
+            case 8:
+                valorTexto = "Q";
+                break;
+            case 9:
+                valorTexto = "J";
+                break;
+            case 10:
+                valorTexto = "K";
+                break;
+            default:
+                valorTexto = Integer.toString(valor);
+                break;
+        }
+        naipeTexto = naipe.name().charAt(0);
+        return valorTexto + "-" + naipeTexto;
+    }
+
     public boolean estaEncoberta() {
         return encoberta;
     }
 
-    public void virar() {
-        encoberta = !encoberta;
+    public void setEncoberta(boolean encoberta) {
+        this.encoberta = encoberta;
     }
 
     public int compara(Carta c) {
