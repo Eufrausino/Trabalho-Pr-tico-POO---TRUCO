@@ -38,4 +38,8 @@ public class Equipe {
     public void setTrucado(boolean trucado) {
         this.trucado = trucado;
     }
+
+    public int getPontos() {
+        return pontos;
+    }
 }
