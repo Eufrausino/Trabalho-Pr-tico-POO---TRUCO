@@ -7,19 +7,19 @@ public class Partida {
 	private Equipe equipe1;
 	private Equipe equipe2;
 	private Equipe equipeVencedora;
-	
-	
+
+
 	public Partida(Equipe equipe1,Equipe equipe2, Baralho baralho) {
 		jogos = new ArrayList<Jogo>();
 		this.equipe1 = equipe1;
 		this.equipe2 = equipe2;
 		this.baralho = baralho;
 	}
-	
+
 	public Equipe getEquipeVencedora() {
 		return equipeVencedora;
 	}
-	
+
 	public void defineVencedorPartida() {
 		int pontosEq1 = 0, pontosEq2 = 0;
 		for(int i = 0; i < jogos.size(); i++){
@@ -48,7 +48,7 @@ public class Partida {
 			jogos.add(new Jogo());
 			jogos.get(count).executajogo(equipe1, equipe2);
 		}
-		
+
 		defineVencedorPartida();
 	}
 }

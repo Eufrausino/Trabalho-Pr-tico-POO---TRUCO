@@ -5,7 +5,7 @@ import java.util.Random;
 public class Baralho {
     private int cartasRestantes;
     private Carta[] cartas = new Carta[40];
-    private boolean[] jogada = new boolean[40];
+    private boolean[] retirada = new boolean[40];
 
     public Baralho() {
         cartasRestantes = 40;
@@ -16,14 +16,14 @@ public class Baralho {
                     cartas[base + v] = new Carta(v, n);
         // Inicializa o vetor jogadas
         for(int i = 0; i < 40; ++i)
-            jogada[i] = false;
+            retirada[i] = false;
     }
 
     public void reiniciar() {
         cartasRestantes = 40;
         // Reinicializa o vetor jogadas
         for(int i = 0; i < 40; ++i)
-            jogada[i] = false;
+            retirada[i] = false;
     }
 
     public Carta retiraCartaAleatoria() {
@@ -31,11 +31,11 @@ public class Baralho {
         if(cartasRestantes == 0) return null;
         Random rand = new Random();
         int i = rand.nextInt(40);
-        // Se a carta já tiver sido jogada, repita a geração do índice
+        // Se a carta já tiver sido retirada, repita a geração do índice
         // aleatório até encontrar uma que não tenha sido
-        while(jogada[i]) i = rand.nextInt(40);
+        while(retirada[i]) i = rand.nextInt(40);
         --cartasRestantes;
-        jogada[i] = true;
+        retirada[i] = true;
         return cartas[i];
     }
 
