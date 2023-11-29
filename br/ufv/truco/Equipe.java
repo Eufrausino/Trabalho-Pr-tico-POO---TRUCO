@@ -35,6 +35,14 @@ public class Equipe {
         return trucado;
     }
 
+    public Jogador getJogador1() {
+        return jogador1;
+    }
+
+    public Jogador getJogador2() {
+        return jogador2;
+    }
+
     public void setTrucado(boolean trucado) {
         this.trucado = trucado;
     }

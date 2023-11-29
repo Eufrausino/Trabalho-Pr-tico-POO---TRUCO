@@ -42,14 +42,14 @@ public class Jogo {
             if (equipe1.getPontos() == 10 || equipe2.getPontos() == 10) {
                 Mao mao = new Mao();
                 mao.setValor(4);
-                mao.executaMao();
+                mao.executaMao(equipe1, equipe2);
                 this.addMao(mao);
             }
             
             //Executa uma mão de valor 3 de padrão
             else {
                 Mao mao = new Mao();
-                mao.executaMao();
+                mao.executaMao(equipe1, equipe2);
                 this.addMao(mao);
             }
         }
@@ -63,17 +63,12 @@ public class Jogo {
 
         //Se as duas equipes tiverem 10 pontos, a equipe que estiver trucada vence
         else if (equipe1.getPontos() == 10 || equipe2.getPontos() == 10) {
-            
-            if (equipe1.getPontos() == 10 && equipe2.estaTrucado() == true){
+            if (equipe1.getPontos() == 10 && equipe2.estaTrucado() == true) {
                 this.setEquipeVencedora(equipe2);
-            }
-            
-            else if (equipe2.getPontos() == 10 && equipe1.estaTrucado() == true){
+            } else if (equipe2.getPontos() == 10 && equipe1.estaTrucado() == true) {
                 this.setEquipeVencedora(equipe1);
             }
-        }
-        
-        else {
+        } else {
             this.setEquipeVencedora(equipe2);
         }
     }
@@ -83,7 +78,7 @@ public class Jogo {
         if (this.getEquipeVencedora() == null) {
             System.out.println("O jogo ainda não foi finalizado");
         } else {
-            System.out.println("A equipe vencedora do jogo foi: " + this.getEquipeVencedora().getId());
+            System.out.println("A equipe vencedora do jogo foi: " + this.getEquipeVencedora());
         }
     }
     

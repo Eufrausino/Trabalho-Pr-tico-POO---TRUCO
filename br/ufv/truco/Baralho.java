@@ -38,4 +38,8 @@ public class Baralho {
         jogada[i] = true;
         return cartas[i];
     }
+
+    public int getCartasRestantes() {
+        return cartasRestantes;
+    }
 }

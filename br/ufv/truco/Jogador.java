@@ -18,9 +18,8 @@ public class Jogador {
         this.cartas = new ArrayList<Carta>();
     }
 
-    public void receberCartas(Carta[] cartas) {
-        for(int i = 0; i < 3; ++i)
-            this.cartas.add(i, cartas[i]);
+    public void receberCartas(Carta carta) {
+        this.cartas.add(carta);
     }
 
     // public void pedirTruco() {}
@@ -56,5 +55,8 @@ public class Jogador {
         Carta c = cartas.remove(indiceEscolhida);
         c.setEncoberta(coberta);
         return c;
+    }
+
+    public void setCartas(ArrayList<Carta> arrayList) {
     }
 }

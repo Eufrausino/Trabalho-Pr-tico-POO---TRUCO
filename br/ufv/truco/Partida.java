@@ -1,3 +1,4 @@
+package br.ufv.truco;
 import java.util.ArrayList;
 
 public class Partida {
@@ -19,14 +20,14 @@ public class Partida {
 		return equipeVencedora;
 	}
 	
-	public void devineVencedorPartida() {
+	public void defineVencedorPartida() {
 		int pontosEq1 = 0, pontosEq2 = 0;
 		for(int i = 0; i < jogos.size(); i++){
-			jogos.get(i).getEquipeVencedora;
-			if(equipe1 == jogos.get(i).getEquipeVencedora) {
+			jogos.get(i).getEquipeVencedora();
+			if(equipe1 == jogos.get(i).getEquipeVencedora()) {
 				pontosEq1++;
 			}
-			else if(equipe2 == jogos.get(i).getEquipeVencedora) {
+			else if(equipe2 == jogos.get(i).getEquipeVencedora()) {
 				pontosEq2++;
 			}
 		}
@@ -45,7 +46,7 @@ public class Partida {
 		int count = 0;
 		while(jogos.size()<3) {
 			jogos.add(new Jogo());
-			jogos.get(count).executaJogo(equipe1, equipe2);
+			jogos.get(count).executajogo(equipe1, equipe2);
 		}
 		
 		defineVencedorPartida();

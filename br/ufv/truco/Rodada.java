@@ -7,6 +7,7 @@ public class Rodada
 	private Equipe equipeVencedora;
 	private int trucado = 0;
 	private Scanner leitor;
+    public Jogador jogadorVencedor;
 	
 	public Rodada()
 	{
@@ -303,7 +304,7 @@ public class Rodada
 		int indiceMaior = this.declaraVencedor(cartasJogadas.get(0), 
 		cartasJogadas.get(1), cartasJogadas.get(2), cartasJogadas.get(3));
 
-		Carta CartaVencedora = new Carta(3, Naipe.Ouros);
+		Carta CartaVencedora = new Carta(3, Naipe.OUROS);
 
 		for(int i = 0; i < cartasJogadas.size(); i++)
 		{
@@ -312,8 +313,6 @@ public class Rodada
 				CartaVencedora = cartasJogadas.get(i);
 			}
 		}
-
-		Jogador jogadorVencedor = new Jogador("Cléber", false);
 
 		for(int i = 0; i < jogadores.size(); i++)
 		{
@@ -347,4 +346,5 @@ public class Rodada
 			}
 		}
 	}
+
 }
