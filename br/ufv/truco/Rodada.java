@@ -191,7 +191,8 @@ public class Rodada
 
 				case 3:
 				this.resposta(j1);
-				switch (this.resposta(j1)) {
+				switch (this.resposta(j1))
+				{
 					case 'C':
 						return 0;
 					case 'D':
@@ -213,7 +214,7 @@ public class Rodada
 		}
 	}
 
-	public void declaraVencedor(Carta c1, Carta c2, Carta c3, Carta c4)
+	public int declaraVencedor(Carta c1, Carta c2, Carta c3, Carta c4)
 	{
 		ArrayList<Carta> cartasNaMesa = new ArrayList<Carta>();
 
@@ -223,6 +224,7 @@ public class Rodada
 		cartasNaMesa.add(c4);
 
 		Carta maior = cartasNaMesa.get(0);
+		int maior_indice;
 		
 		for(int i = 1; i <= cartasNaMesa.size(); i++)
 		{
@@ -232,8 +234,7 @@ public class Rodada
 			}
 		}
 
-		//TODO: Falta associar a carta ao jogador que a jogou
-
+		return maior_indice = cartasNaMesa.indexOf(maior);
 	}
 	
 	public void executaRodada(Equipe equipe1, Equipe equipe2)
@@ -251,6 +252,7 @@ public class Rodada
 		int anterior = atual - 1;
 
 		boolean correu = false;
+		int indice = 0;
 		
 		ArrayList<Carta> cartasJogadas = new ArrayList<Carta>();
 		
@@ -265,6 +267,7 @@ public class Rodada
 				case 0:
 					this.jogar(j, turno);
 					cartasJogadas.add(this.jogar(j, turno));
+					indice++;
 					break;
 				case 1:
 					this.ConfrontoTruco(jogadores.get(atual), jogadores.get(anterior));
@@ -278,6 +281,7 @@ public class Rodada
 							System.out.println("Aceitou!");
 							this.jogar(j, turno);
 							cartasJogadas.add(this.jogar(j, turno));
+							indice++;
 							break;
 						default:
 							break;
@@ -296,14 +300,51 @@ public class Rodada
 			atual++;
 		}
 
-		//TODO: encontrar o vencedor da rodada. Carta -> Jogador -> Equipe
+		int indiceMaior = this.declaraVencedor(cartasJogadas.get(0), 
+		cartasJogadas.get(1), cartasJogadas.get(2), cartasJogadas.get(3));
+
+		Carta CartaVencedora = new Carta(3, Naipe.Ouros);
+
+		for(int i = 0; i < cartasJogadas.size(); i++)
+		{
+			if(i == indiceMaior)
+			{
+				CartaVencedora = cartasJogadas.get(i);
+			}
+		}
+
+		Jogador jogadorVencedor = new Jogador("Cléber", false);
+
+		for(int i = 0; i < jogadores.size(); i++)
+		{
+			if(i == indiceMaior)
+			{
+				jogadorVencedor = jogadores.get(i);
+			}
+		}
+		definirVencedor(CartaVencedora, jogadorVencedor, equipe1, equipe2);
 	}
 
-	/*public Jogador definirVencedor()
+	public void definirVencedor(Carta CartaVencedora, Jogador jogadorVencedor, Equipe e1, Equipe e2)
 	{
-		//Comparar a maior carta da mesa -> associar ela ao jogador que a jogou -> associar o
-		//jogador a equipe;
-		//Iniciar nova rodada a partir desse jogador;
+		boolean marcaEquipeVencedora = false;
 		
-	}*/
+		for(int i = 0; i < 2; i++)
+		{
+			if(jogadorVencedor.equals(e1.getJogador1()) || jogadorVencedor.equals(e1.getJogador2()))
+			{
+				marcaEquipeVencedora = true;
+				this.equipeVencedora = e1;
+			}
+		}
+
+		for(int i = 0; i < 2; i++)
+		{
+			if(jogadorVencedor.equals(e2.getJogador1()) || jogadorVencedor.equals(e2.getJogador2()))
+			{
+				marcaEquipeVencedora = true;
+				this.equipeVencedora = e2;
+			}
+		}
+	}
 }
