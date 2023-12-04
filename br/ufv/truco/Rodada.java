@@ -1,12 +1,10 @@
 package br.ufv.truco;
-import java.util.Scanner;
 import java.util.ArrayList;
 
 public class Rodada
 {
 	private Equipe equipeVencedora;
 	private int trucado = 0;
-	private Scanner leitor;
 	public Jogador jogadorVencedor;
 	private Baralho baralho = new Baralho();
 
@@ -30,20 +28,6 @@ public class Rodada
 	public int getTrucado()
 	{
 		return trucado;
-	}
-
-	public Carta jogar(Jogador jogador, int turno)
-	{
-		boolean coberta = false;
-
-		if(turno >= 1)
-		{
-			System.out.println("Jogar encoberta? Entre com 0 para não OU 1 para sim");
-			int acobertada = leitor.nextInt();
-			coberta = (acobertada == 1);
-		}
-
-		return jogador.jogarCarta(coberta);
 	}
 
 	private boolean trucar() {
@@ -72,7 +56,7 @@ public class Rodada
 		while(true) {
 			// Resposta da defesa
 			while(true) {
-				Resposta def = defesa.resposta();
+				Resposta def = defesa.responde();
 				switch(def) {
 					case ACEITA:
 						return ResultadoTruco.ACEITO;
@@ -89,7 +73,7 @@ public class Rodada
 			}
 			// Reação do atacante!
 			while(true) {
-				Resposta atq = ataque.resposta();
+				Resposta atq = ataque.responde();
 				switch(atq) {
 					case ACEITA:
 						return ResultadoTruco.ACEITO;
@@ -124,8 +108,6 @@ public class Rodada
 
 	public void executaRodada(Equipe equipe1, Equipe equipe2)
 	{
-		this.leitor = new Scanner(System.in);
-
 		ArrayList<Jogador> jogadores = new ArrayList<Jogador>();
 		jogadores.add(equipe1.getJogador1());
 		jogadores.add(equipe1.getJogador2());
@@ -136,7 +118,7 @@ public class Rodada
 		for(Jogador j : jogadores) {
 			for(int i = 0; i < 3; ++i)
 				if(j != null)
-					j.receberCartas(baralho.retiraCartaAleatoria());
+					j.recebeCarta(baralho.retiraCartaAleatoria());
 		}
 
 		int turno = 0;
@@ -147,38 +129,33 @@ public class Rodada
 
 		for(Jogador j : jogadores)
 		{
-			int resposta = 0;
-			if(trucado < 4) {
-				while(true) {
-					System.out.println("Jogar ou pedir truco?");
-					System.out.println("Entre com 0 para jogar ou 1 para pedir truco: ");
-					resposta = leitor.nextInt();
-					if(resposta == 0 || resposta == 1) break;
-					// Resposta inválida!
-					System.err.println("[!] Resposta inválida, tente novamente");
-				}
-			}
-
-			if(resposta == 0)
+			Carta c;
+			Resposta resp = j.age();
+			switch(resp)
 			{
-				cartasJogadas.add(this.jogar(j, turno));
-			}
-			else
-			{
-				ResultadoTruco res = confrontoTruco(jogadores.get(prox), jogadores.get(atual));
-				switch(res)
-				{
-					case ACEITO:
-						this.jogar(j, turno);
-						cartasJogadas.add(this.jogar(j, turno));
-						break;
-					case ATAQUE_CORRE:
-						definirVencedor(null, jogadores.get(prox), equipe1, equipe2);
-						return; // rodada encerra
-					case DEFESA_CORRE:
-						definirVencedor(null, jogadores.get(atual), equipe1, equipe2);
-						return; // rodada encerra
-				}
+				case ACEITA:
+					c = j.jogaCarta(turno >= 1);
+					cartasJogadas.add(c);
+					break;
+				case AUMENTA:
+					ResultadoTruco res = confrontoTruco(jogadores.get(atual), jogadores.get(prox));
+					switch(res)
+					{
+						case ACEITO:
+							c = j.jogaCarta(turno >= 1);
+							cartasJogadas.add(c);
+							break;
+						case ATAQUE_CORRE:
+							definirVencedor(null, jogadores.get(prox), equipe1, equipe2);
+							return; // rodada encerra
+						case DEFESA_CORRE:
+							definirVencedor(null, jogadores.get(atual), equipe1, equipe2);
+							return; // rodada encerra
+					}
+					break;
+				case CORRE:
+					definirVencedor(null, jogadores.get(prox), equipe1, equipe2);
+					return; // rodada encerra
 			}
 			turno++;
 			atual = prox;

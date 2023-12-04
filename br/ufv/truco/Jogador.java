@@ -6,63 +6,85 @@ import java.util.Scanner;
 public class Jogador {
     private String nome;
 
-    private ArrayList<Carta> cartas;
+    private ArrayList<Carta> cartas = new ArrayList<>();
 
-    private boolean ehMaquina;
+    private boolean ehMaquina = false;
 
     private Scanner scan = new Scanner(System.in);
 
     public Jogador(String nome) {
         this.nome = nome;
-        this.ehMaquina = false;
-        this.cartas = new ArrayList<Carta>();
     }
 
     public Jogador(String nome, boolean ehMaquina) {
         this.nome = nome;
         this.ehMaquina = ehMaquina;
-        this.cartas = new ArrayList<Carta>();
     }
 
-    public void receberCartas(Carta carta) {
-        this.cartas.add(carta);
+    public void recebeCarta(Carta carta) {
+        cartas.add(carta);
     }
 
-    // public void pedirTruco() {}
-
-    public Resposta resposta() {
-        if(ehMaquina) return Resposta.ACEITA; // mudar isso
-        int resp;
+    public Resposta age() {
+        System.out.printf("== Jogador (%s) ==\n", nome);
         while(true) {
-            System.out.println("-> Corre, aceita ou pede mais?");
-            System.out.println("Correr (0), aceitar (1), pedir mais (2) => ");
-            resp = scan.nextInt();
+            System.out.println("Qual ação você deseja fazer?");
+            System.out.print("(1) jogar carta, (2) pedir truco, (3) gritar, (4) correr => ");
+            int resp = scan.nextInt();
             switch(resp) {
-                case 0:
-                    System.out.println("Correu!");
-                    return Resposta.CORRE;
                 case 1:
-                    System.out.println("Aceitou!");
                     return Resposta.ACEITA;
                 case 2:
                     return Resposta.AUMENTA;
-                default:
-                    System.err.println("[!] Resposta inválida, tente novamente");
+                case 3:
+                    grita();
                     break;
+                case 4:
+                    return Resposta.CORRE;
+                default:
+                    System.err.println("[!] Resposta não reconhecida");
             }
         }
     }
 
-    public String gritar(Jogador alvo) {
-        if(ehMaquina) return "AAAAAA";
-        System.out.print("-> Grito sinistro muito foda: ");
-        String grito = scan.nextLine();
-        return grito;
+    public Resposta responde() {
+        if(ehMaquina) return Resposta.ACEITA; // mudar isso
+        while(true) {
+            System.out.printf("== Responder (%s) ==\n", nome);
+            System.out.println("Corre, aceita ou pede mais?");
+            System.out.print("(1) correr, (2) aceitar, (3) pedir mais => ");
+            int resp = scan.nextInt();
+            switch(resp) {
+                case 1:
+                    System.out.println("Correu!");
+                    return Resposta.CORRE;
+                case 2:
+                    System.out.println("Aceitou!");
+                    return Resposta.ACEITA;
+                case 3:
+                    return Resposta.AUMENTA;
+                default:
+                    System.err.println("[!] Resposta inválida, tente novamente");
+            }
+            System.out.println();
+        }
     }
 
-    public Carta jogarCarta(boolean coberta) {
+    public void grita() {
+        String grito;
+        if(ehMaquina) {
+            grito = "AAAAAA";
+        } else {
+            System.out.print("Grito sinistro: ");
+            scan.nextLine(); // consome um '\n' que com certeza já estará na entrada
+            grito = scan.nextLine();
+        }
+        System.out.println(nome + " bate na mesa e grita: " + grito + "\n");
+    }
+
+    public Carta jogaCarta(boolean podeEncoberta) {
         int i = 1, indiceEscolhida;
-        System.out.printf("== Jogar carta (%s) ==\n", nome);
+        System.out.printf("-- Jogar carta (%s) --\n", nome);
         StringBuilder s = new StringBuilder();
         for(Carta carta : cartas) {
             s.append(i + ". [" + carta + "] ");
@@ -70,16 +92,32 @@ public class Jogador {
         }
         System.out.println(s.toString());
         while(true) {
-            System.out.println("-> Qual carta deseja jogar? ");
+            System.out.print("Carta a jogar => ");
             indiceEscolhida = scan.nextInt();
             if(indiceEscolhida >= 1 && indiceEscolhida <= i) break;
             else System.err.println("[!] Carta inválida! Escolha novamente");
         }
+        boolean continua = true;
         Carta c = cartas.remove(indiceEscolhida - 1);
-        c.setEncoberta(coberta);
+        if(podeEncoberta) {
+            while(continua) {
+                System.out.print("(1) jogar normalmente, (2) jogar encoberta => ");
+                int resp = scan.nextInt();
+                switch(resp) {
+                    case 1:
+                        c.setEncoberta(false);
+                        continua = false;
+                        break;
+                    case 2:
+                        c.setEncoberta(true);
+                        continua = false;
+                        break;
+                    default:
+                        System.err.println("[!] Resposta não reconhecida");
+                }
+            }
+        }
+        System.out.println();
         return c;
-    }
-
-    public void setCartas(ArrayList<Carta> arrayList) {
     }
 }

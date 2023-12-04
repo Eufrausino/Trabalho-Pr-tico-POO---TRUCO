@@ -47,7 +47,7 @@ public class Mao {
                 if (baralho.getCartasRestantes() > 0) {
                     // Remove a carta do topo do baralho e a dá ao jogador
                     Carta carta = baralho.retiraCartaAleatoria();
-                    jogador.receberCartas(carta);
+                    jogador.recebeCarta(carta);
                 }
             }
         }
@@ -58,8 +58,8 @@ public class Mao {
     if ((rodadas.get(rodadas.size() - 1).jogadorVencedor == null) || (rodadas.get(rodadas.size() - 1).jogadorVencedor == jogador1) || (rodadas.size() == 0)){
         this.ordemjogadores.add(jogador1);
         this.ordemjogadores.add(jogador2);
-    } 
-    
+    }
+
     else {
         this.ordemjogadores.add(jogador2);
         this.ordemjogadores.add(jogador1);
@@ -68,20 +68,20 @@ public class Mao {
 
     //Função que define a ordem dos jogadores na mão, para um jogo de 4 jogadores
     public void defineOrdemJogadores(Equipe equipe,Equipe equipe2) {
-        
+
         if (equipe.getJogador2() == null && equipe2.getJogador2() == null) {
             defineOrdemJogadores(equipe.getJogador1(), equipe2.getJogador1());
         }
-        
+
         else {
-        
+
         //JogadorMaiorCarta é o jogador que possui a maior carta da rodada, nome provisório de função
             if ((rodadas.get(rodadas.size() - 1).jogadorVencedor == null) || (rodadas.get(rodadas.size() - 1).jogadorVencedor == equipe.getJogador1()) ||  (rodadas.size() == 0)){
                 this.ordemjogadores.add(equipe.getJogador1());
                 this.ordemjogadores.add(equipe2.getJogador1());
                 this.ordemjogadores.add(equipe.getJogador2());
                 this.ordemjogadores.add(equipe2.getJogador2());
-            
+
             } else if (rodadas.get(rodadas.size() - 1).jogadorVencedor == equipe2.getJogador1()) {
                 this.ordemjogadores.add(equipe2.getJogador1());
                 this.ordemjogadores.add(equipe.getJogador2());
@@ -101,7 +101,7 @@ public class Mao {
             }
         }
     }
-    
+
     //Função que executa uma Mão
     public void executaMao(Equipe equipe1, Equipe equipe2) {
         int Vequipe1 = 0;
