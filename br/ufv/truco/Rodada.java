@@ -7,83 +7,29 @@ public class Rodada
 	private Equipe equipeVencedora;
 	private int trucado = 0;
 	private Scanner leitor;
-    public Jogador jogadorVencedor;
-	
-	public Rodada()
-	{
-		
-	}
-	
-	public Rodada(Equipe EquipeVencedora, int Trucado)
-	{
-		this.equipeVencedora = EquipeVencedora;
-		this.trucado = Trucado;
-	}
-	
+	public Jogador jogadorVencedor;
+	private Baralho baralho = new Baralho();
+
+	public Rodada() {}
+
 	public void setEquipeVencedora(Equipe EquipeVencedora)
 	{
 		this.equipeVencedora = EquipeVencedora;
 	}
-	
+
 	public Equipe getEquipeVencedora()
 	{
 		return this.equipeVencedora;
 	}
-	
+
 	public void setTrucado(int Trucado)
 	{
 		this.trucado = Trucado;
 	}
-	
+
 	public int getTrucado()
 	{
 		return trucado;
-	}
-	
-	public void trucar(Jogador alvo)//Certo
-	{
-		System.out.println("Truco!");
-		trucado++;
-	}
-
-	public char resposta(Jogador alvo)
-	{
-		this.leitor = new Scanner(System.in);
-		System.out.println("Corre, aceita ou pede mais?");
-		System.out.println("Entre com 0 para correr, 1 para aceitar ou 2 para trucar: ");
-		int resposta = leitor.nextInt();
-		
-		switch(resposta)
-		{
-			case 0:
-				System.out.println("Correu!");
-				return 'C';
-			case 1:
-				System.out.println("Aceitou!");
-				return 'A';
-			case 2:
-				switch(this.trucado)
-				{
-					case 1:
-						System.out.println("SEEEEIS!");
-						this.trucar(alvo);
-						return 'S';
-					case 2:
-						System.out.println("NOOOOOVE!");
-						this.trucar(alvo);
-						return 'N';
-					case 3:
-						System.out.println("DOOOZE!");
-						return 'D';
-					default:
-						break;
-				}
-				break;
-			default:
-				break;
-		}
-		leitor.close();
-		return 'E';//erro
 	}
 
 	public Carta jogar(Jogador jogador, int turno)
@@ -94,256 +40,168 @@ public class Rodada
 		{
 			System.out.println("Jogar encoberta? Entre com 0 para não OU 1 para sim");
 			int acobertada = leitor.nextInt();
-
-			switch (acobertada) 
-			{
-				case 0:
-					coberta = false;
-					break;
-			
-				case 1:
-					coberta = true;
-					break;
-				default:
-					break;
-			}
-
-			return jogador.jogarCarta(coberta);
+			coberta = (acobertada == 1);
 		}
 
 		return jogador.jogarCarta(coberta);
 	}
 
-	public int ConfrontoTruco(Jogador j1, Jogador j2)
-	{
-		this.resposta(j2);
-
-		switch(this.trucado)
-		{
+	private boolean trucar() {
+		if(trucado >= 4) return false;
+		++trucado;
+		switch(trucado) {
 			case 1:
-				this.resposta(j1);
-				switch (this.resposta(j1)) 
-				{
-					case 'C':
-						return 0;
-
-					case 'S':
-						this.resposta(j2);
-						switch (this.resposta(j2))
-						{
-							case 'C':
-								return 0;
-							
-							case 'N':
-								this.resposta(j1);
-								switch (this.resposta(j1)) 
-								{
-									case 'C':
-										return 0;
-
-									case 'D':
-										switch (this.resposta(j2))
-										{
-											case 'C':
-												return 0;
-											default:
-												return 1;
-										}
-								
-									default:
-										return 1;
-								}
-							default:
-								return 1;
-						}
-						default:
-							return 1;
-					}
+				System.out.println("TRUCO!!!");
+				break;
 			case 2:
-			this.resposta(j1);
-			switch (this.resposta(j1))
-			{
-				case 'C':
-					return 0;
-				
-				case 'N':
-					this.resposta(j2);
-					switch (this.resposta(j1)) 
-					{
-						case 'C':
-							return 0;
+				System.out.println("MEEEEEEEEI PAUUUU!");
+				break;
+			case 3:
+				System.out.println("NOOOOOOOOOVE!");
+				break;
+			case 4:
+				System.out.println("*Doze*.");
+				break;
+		}
+		return true;
+	}
 
-						case 'D':
-							switch (this.resposta(j2))
-							{
-								case 'C':
-									return 0;
-								default:
-									return 1;
-							}
-					
-						default:
-							return 1;
-					}
-				
-					default:
-						return 1;
-				}
-
-				case 3:
-				this.resposta(j1);
-				switch (this.resposta(j1))
-				{
-					case 'C':
-						return 0;
-					case 'D':
-						this.resposta(j2);
-						switch (this.resposta(j2)) 
-						{
-							case 'C':
-								return 0;
-						
-							default:
-								return 1;
+	public ResultadoTruco confrontoTruco(Jogador ataque, Jogador defesa)
+	{
+		if(!trucar()) return ResultadoTruco.ACEITO;
+		while(true) {
+			// Resposta da defesa
+			while(true) {
+				Resposta def = defesa.resposta();
+				switch(def) {
+					case ACEITA:
+						return ResultadoTruco.ACEITO;
+					case AUMENTA:
+						if(!trucar()) {
+							System.err.println("[!] Não pode aumentar! >:(");
+							continue;
 						}
-					default:
-						return 1;
+						break;
+					case CORRE:
+						return ResultadoTruco.DEFESA_CORRE;
 				}
-			
-				default:
-					return 1;
+				break;
+			}
+			// Reação do atacante!
+			while(true) {
+				Resposta atq = ataque.resposta();
+				switch(atq) {
+					case ACEITA:
+						return ResultadoTruco.ACEITO;
+					case AUMENTA:
+						if(!trucar()) {
+							System.err.println("[!] Não pode aumentar! >:(");
+							continue;
+						}
+						break;
+					case CORRE:
+						return ResultadoTruco.ATAQUE_CORRE;
+				}
+				break;
+			}
 		}
 	}
 
-	public int declaraVencedor(Carta c1, Carta c2, Carta c3, Carta c4)
+	public int declaraVencedor(ArrayList<Carta> cartas)
 	{
-		ArrayList<Carta> cartasNaMesa = new ArrayList<Carta>();
+		Carta maior = cartas.get(0);
 
-		cartasNaMesa.add(c1);
-		cartasNaMesa.add(c2);
-		cartasNaMesa.add(c3);
-		cartasNaMesa.add(c4);
-
-		Carta maior = cartasNaMesa.get(0);
-		int maior_indice;
-		
-		for(int i = 1; i <= cartasNaMesa.size(); i++)
+		for(int i = 1; i <= cartas.size(); i++)
 		{
-			if(!maior.ganhaDe(cartasNaMesa.get(i)))
+			if(!maior.ganhaDe(cartas.get(i)))
 			{
-				maior = cartasNaMesa.get(i);
+				maior = cartas.get(i);
 			}
 		}
 
-		return maior_indice = cartasNaMesa.indexOf(maior);
+		return cartas.indexOf(maior);
 	}
-	
+
 	public void executaRodada(Equipe equipe1, Equipe equipe2)
 	{
 		this.leitor = new Scanner(System.in);
-		
+
 		ArrayList<Jogador> jogadores = new ArrayList<Jogador>();
 		jogadores.add(equipe1.getJogador1());
 		jogadores.add(equipe1.getJogador2());
 		jogadores.add(equipe2.getJogador1());
 		jogadores.add(equipe2.getJogador2());
 
-		int turno = 0;
-		int atual = 1;
-		int anterior = atual - 1;
+		// Distribui as cartas para cada um dos jogadores
+		for(Jogador j : jogadores) {
+			for(int i = 0; i < 3; ++i)
+				if(j != null)
+					j.receberCartas(baralho.retiraCartaAleatoria());
+		}
 
-		boolean correu = false;
-		int indice = 0;
-		
+		int turno = 0;
+		int prox = 1;
+		int atual = prox - 1;
+
 		ArrayList<Carta> cartasJogadas = new ArrayList<Carta>();
-		
+
 		for(Jogador j : jogadores)
 		{
-			System.out.println("Jogar ou pedir truco?");
-			System.out.println("Entre com 0 para jogar ou 1 para pedir truco: ");
-			int resposta = leitor.nextInt();
-
-			switch(resposta)
-			{
-				case 0:
-					this.jogar(j, turno);
-					cartasJogadas.add(this.jogar(j, turno));
-					indice++;
-					break;
-				case 1:
-					this.ConfrontoTruco(jogadores.get(atual), jogadores.get(anterior));
-					switch(this.ConfrontoTruco(jogadores.get(atual), jogadores.get(anterior)))
-					{
-						case 0:
-							System.out.println("Correu!");
-							correu = true;
-							break;
-						case 1:
-							System.out.println("Aceitou!");
-							this.jogar(j, turno);
-							cartasJogadas.add(this.jogar(j, turno));
-							indice++;
-							break;
-						default:
-							break;
-					}
-				default:
-					break;
+			int resposta = 0;
+			if(trucado < 4) {
+				while(true) {
+					System.out.println("Jogar ou pedir truco?");
+					System.out.println("Entre com 0 para jogar ou 1 para pedir truco: ");
+					resposta = leitor.nextInt();
+					if(resposta == 0 || resposta == 1) break;
+					// Resposta inválida!
+					System.err.println("[!] Resposta inválida, tente novamente");
+				}
 			}
 
-			if(correu == true)
+			if(resposta == 0)
 			{
-				break;
+				cartasJogadas.add(this.jogar(j, turno));
 			}
-
+			else
+			{
+				ResultadoTruco res = confrontoTruco(jogadores.get(prox), jogadores.get(atual));
+				switch(res)
+				{
+					case ACEITO:
+						this.jogar(j, turno);
+						cartasJogadas.add(this.jogar(j, turno));
+						break;
+					case ATAQUE_CORRE:
+						definirVencedor(null, jogadores.get(prox), equipe1, equipe2);
+						return; // rodada encerra
+					case DEFESA_CORRE:
+						definirVencedor(null, jogadores.get(atual), equipe1, equipe2);
+						return; // rodada encerra
+				}
+			}
 			turno++;
-			anterior = atual;
-			atual++;
+			atual = prox;
+			prox++;
 		}
 
-		int indiceMaior = this.declaraVencedor(cartasJogadas.get(0), 
-		cartasJogadas.get(1), cartasJogadas.get(2), cartasJogadas.get(3));
+		int indiceMaior = this.declaraVencedor(cartasJogadas);
+		Carta cartaVencedora = cartasJogadas.get(indiceMaior);
+		jogadorVencedor = jogadores.get(indiceMaior);
 
-		Carta CartaVencedora = new Carta(3, Naipe.OUROS);
-
-		for(int i = 0; i < cartasJogadas.size(); i++)
-		{
-			if(i == indiceMaior)
-			{
-				CartaVencedora = cartasJogadas.get(i);
-			}
-		}
-
-		for(int i = 0; i < jogadores.size(); i++)
-		{
-			if(i == indiceMaior)
-			{
-				jogadorVencedor = jogadores.get(i);
-			}
-		}
-		definirVencedor(CartaVencedora, jogadorVencedor, equipe1, equipe2);
+		definirVencedor(cartaVencedora, jogadorVencedor, equipe1, equipe2);
 	}
 
 	public void definirVencedor(Carta CartaVencedora, Jogador jogadorVencedor, Equipe e1, Equipe e2)
 	{
-		boolean marcaEquipeVencedora = false;
-		
-		for(int i = 0; i < 2; i++)
+		if(jogadorVencedor.equals(e1.getJogador1()) || jogadorVencedor.equals(e1.getJogador2()))
 		{
-			if(jogadorVencedor.equals(e1.getJogador1()) || jogadorVencedor.equals(e1.getJogador2()))
-			{
-				marcaEquipeVencedora = true;
-				this.equipeVencedora = e1;
-			}
+			this.equipeVencedora = e1;
 		}
 
-		for(int i = 0; i < 2; i++)
+		if(jogadorVencedor.equals(e2.getJogador1()) || jogadorVencedor.equals(e2.getJogador2()))
 		{
-			if(jogadorVencedor.equals(e2.getJogador1()) || jogadorVencedor.equals(e2.getJogador2()))
-			{
-				marcaEquipeVencedora = true;
-				this.equipeVencedora = e2;
-			}
+			this.equipeVencedora = e2;
 		}
 	}
 

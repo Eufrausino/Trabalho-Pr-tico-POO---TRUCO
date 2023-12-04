@@ -12,7 +12,7 @@ public class Baralho {
         // Inicializa todas as cartas
         for(int base = 0; base < 40; base += 10)
             for(Naipe n : Naipe.values())
-                for(int v = 1; v <= 10; ++v)
+                for(int v = 1; v < 10; ++v)
                     cartas[base + v] = new Carta(v, n);
         // Inicializa o vetor jogadas
         for(int i = 0; i < 40; ++i)

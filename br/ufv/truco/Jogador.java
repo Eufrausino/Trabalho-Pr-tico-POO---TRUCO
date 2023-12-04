@@ -10,7 +10,13 @@ public class Jogador {
 
     private boolean ehMaquina;
 
-    private Scanner scan;
+    private Scanner scan = new Scanner(System.in);
+
+    public Jogador(String nome) {
+        this.nome = nome;
+        this.ehMaquina = false;
+        this.cartas = new ArrayList<Carta>();
+    }
 
     public Jogador(String nome, boolean ehMaquina) {
         this.nome = nome;
@@ -24,10 +30,27 @@ public class Jogador {
 
     // public void pedirTruco() {}
 
-    public char resposta(Jogador alvo) {
-        if(ehMaquina) return 's'; // mudar isso
-        System.out.print("-> Resposta: ");
-        return (char) scan.nextByte();
+    public Resposta resposta() {
+        if(ehMaquina) return Resposta.ACEITA; // mudar isso
+        int resp;
+        while(true) {
+            System.out.println("-> Corre, aceita ou pede mais?");
+            System.out.println("Correr (0), aceitar (1), pedir mais (2) => ");
+            resp = scan.nextInt();
+            switch(resp) {
+                case 0:
+                    System.out.println("Correu!");
+                    return Resposta.CORRE;
+                case 1:
+                    System.out.println("Aceitou!");
+                    return Resposta.ACEITA;
+                case 2:
+                    return Resposta.AUMENTA;
+                default:
+                    System.err.println("[!] Resposta inválida, tente novamente");
+                    break;
+            }
+        }
     }
 
     public String gritar(Jogador alvo) {
@@ -42,7 +65,7 @@ public class Jogador {
         System.out.printf("== Jogar carta (%s) ==\n", nome);
         StringBuilder s = new StringBuilder();
         for(Carta carta : cartas) {
-            s.append(i + ". " + carta + " ");
+            s.append(i + ". [" + carta + "] ");
             ++i;
         }
         System.out.println(s.toString());
@@ -52,7 +75,7 @@ public class Jogador {
             if(indiceEscolhida >= 1 && indiceEscolhida <= i) break;
             else System.err.println("[!] Carta inválida! Escolha novamente");
         }
-        Carta c = cartas.remove(indiceEscolhida);
+        Carta c = cartas.remove(indiceEscolhida - 1);
         c.setEncoberta(coberta);
         return c;
     }

@@ -3,7 +3,6 @@ import java.util.ArrayList;
 
 public class Partida {
 	private ArrayList<Jogo> jogos;
-	private Baralho baralho;
 	private Equipe equipe1;
 	private Equipe equipe2;
 	private Equipe equipeVencedora;
@@ -13,7 +12,6 @@ public class Partida {
 		jogos = new ArrayList<Jogo>();
 		this.equipe1 = equipe1;
 		this.equipe2 = equipe2;
-		this.baralho = baralho;
 	}
 
 	public Equipe getEquipeVencedora() {
