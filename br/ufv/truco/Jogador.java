@@ -94,7 +94,7 @@ public class Jogador {
         while(true) {
             System.out.print("Carta a jogar => ");
             indiceEscolhida = scan.nextInt();
-            if(indiceEscolhida >= 1 && indiceEscolhida <= i) break;
+            if(indiceEscolhida >= 1 && indiceEscolhida < i) break;
             else System.err.println("[!] Carta inválida! Escolha novamente");
         }
         boolean continua = true;

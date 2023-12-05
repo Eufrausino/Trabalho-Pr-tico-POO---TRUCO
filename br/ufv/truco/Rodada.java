@@ -95,7 +95,7 @@ public class Rodada
 	{
 		Carta maior = cartas.get(0);
 
-		for(int i = 1; i <= cartas.size(); i++)
+		for(int i = 1; i < cartas.size(); i++)
 		{
 			if(!maior.ganhaDe(cartas.get(i)))
 			{

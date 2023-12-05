@@ -1,42 +1,55 @@
 package br.ufv.truco;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Baralho {
     private int cartasRestantes;
-    private Carta[] cartas = new Carta[40];
     private boolean[] retirada = new boolean[40];
+    private Random rand = new Random();
 
     public Baralho() {
-        cartasRestantes = 40;
-        // Inicializa todas as cartas
-        for(int base = 0; base < 40; base += 10)
-            for(Naipe n : Naipe.values())
-                for(int v = 1; v < 10; ++v)
-                    cartas[base + v] = new Carta(v, n);
-        // Inicializa o vetor jogadas
-        for(int i = 0; i < 40; ++i)
-            retirada[i] = false;
+        this.reiniciar();
     }
 
     public void reiniciar() {
         cartasRestantes = 40;
-        // Reinicializa o vetor jogadas
-        for(int i = 0; i < 40; ++i)
-            retirada[i] = false;
+        Arrays.fill(retirada, false);
+    }
+
+    private boolean foiRetirada(int valor, int naipe) {
+        return retirada[naipe * 10 + valor - 1];
+    }
+
+    private void retira(int valor, int naipe) {
+        --cartasRestantes;
+        retirada[naipe * 10 + valor - 1] = true;
     }
 
     public Carta retiraCartaAleatoria() {
         // Baralho vazio, não tem como retornar carta nenhuma
         if(cartasRestantes == 0) return null;
-        Random rand = new Random();
-        int i = rand.nextInt(40);
-        // Se a carta já tiver sido retirada, repita a geração do índice
-        // aleatório até encontrar uma que não tenha sido
-        while(retirada[i]) i = rand.nextInt(40);
-        --cartasRestantes;
-        retirada[i] = true;
-        return cartas[i];
+        int valor, naipeNum;
+        while(true) {
+            valor = rand.nextInt(10) + 1;
+            naipeNum = rand.nextInt(4);
+            if(!foiRetirada(valor, naipeNum))
+                break;
+        }
+        Naipe naipe;
+        switch(naipeNum) {
+            case 0: naipe = Naipe.ESPADAS; break;
+            case 1: naipe = Naipe.COPAS; break;
+            case 2: naipe = Naipe.OUROS; break;
+            case 3: naipe = Naipe.PAUS; break;
+            default:
+                naipe = Naipe.PAUS; // cala a boca LSP
+                System.err.println("[?] estranho...");
+                break;
+        }
+        Carta c = new Carta(valor, naipe);
+        retira(valor, naipeNum);
+        return c;
     }
 
     public int getCartasRestantes() {
