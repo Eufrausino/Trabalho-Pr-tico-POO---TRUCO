@@ -124,58 +124,41 @@ public class Rodada
 		int turno = 0;
 		int prox = 1;
 		int atual = prox - 1;
+		boolean naoPodeTrucar = false;
 
 		ArrayList<Carta> cartasJogadas = new ArrayList<Carta>();
 
 		for(Jogador j : jogadores)
 		{
+			if(prox >= 4) naoPodeTrucar = true;
 			Carta c;
-			Resposta resp = j.age();
+			Resposta resp = j.age(naoPodeTrucar);
 
-			if(prox < 4)
+			switch(resp)
 			{
-				switch(resp)
-				{
-					case ACEITA:
-						c = j.jogaCarta(turno >= 1);
-						cartasJogadas.add(c);
-						break;
-					case AUMENTA:
-						ResultadoTruco res = confrontoTruco(jogadores.get(atual), jogadores.get(prox));
-						switch(res)
-						{
-							case ACEITO:
-								c = j.jogaCarta(turno >= 1);
-								cartasJogadas.add(c);
-								break;
-							case ATAQUE_CORRE:
-								definirVencedor(null, jogadores.get(prox), equipe1, equipe2);
-								return; // rodada encerra
-							case DEFESA_CORRE:
-								definirVencedor(null, jogadores.get(atual), equipe1, equipe2);
-								return; // rodada encerra
-						}
-						break;
-					case CORRE:
-						definirVencedor(null, jogadores.get(prox), equipe1, equipe2);
-						return; // rodada encerra
-				}
-			}
-
-			else if(prox >= 4)
-			{
-				switch(resp)
-				{
-					case ACEITA:
-						c = j.jogaCarta(turno >= 1);
-						cartasJogadas.add(c);
-						break;
-					case CORRE:
-						definirVencedor(null, jogadores.get(prox), equipe1, equipe2);
-						return; // rodada encerra
-					default:
-						break;
-				}
+				case ACEITA:
+					c = j.jogaCarta(turno >= 1);
+					cartasJogadas.add(c);
+					break;
+				case AUMENTA:
+					ResultadoTruco res = confrontoTruco(jogadores.get(atual), jogadores.get(prox));
+					switch(res)
+					{
+						case ACEITO:
+							c = j.jogaCarta(turno >= 1);
+							cartasJogadas.add(c);
+							break;
+						case ATAQUE_CORRE:
+							definirVencedor(null, jogadores.get(prox), equipe1, equipe2);
+							return; // rodada encerra
+						case DEFESA_CORRE:
+							definirVencedor(null, jogadores.get(atual), equipe1, equipe2);
+							return; // rodada encerra
+					}
+					break;
+				case CORRE:
+					definirVencedor(null, jogadores.get(prox), equipe1, equipe2);
+					return; // rodada encerra
 			}
 			
 			turno++;
