@@ -106,7 +106,7 @@ public class Rodada
 		return cartas.indexOf(maior);
 	}
 
-	public void executaRodada(Equipe equipe1, Equipe equipe2)
+	public void executaRodada(Equipe equipe1, Equipe equipe2, int posInicial)
 	{
 		ArrayList<Jogador> jogadores = new ArrayList<Jogador>();
 		jogadores.add(equipe1.getJogador1());
@@ -122,48 +122,47 @@ public class Rodada
 		}
 
 		int turno = 0;
-		int prox = 1;
-		int atual = prox - 1;
 		boolean naoPodeTrucar = false;
 
 		ArrayList<Carta> cartasJogadas = new ArrayList<Carta>();
 
-		for(Jogador j : jogadores)
+		for(int i = 0; i < 4; ++i)
 		{
-			if(prox >= 4) naoPodeTrucar = true;
-			Carta c;
-			Resposta resp = j.age(naoPodeTrucar);
+			int pos = (posInicial + i) % 4;
+			Jogador atual = jogadores.get(pos);
+			if(i == 3) naoPodeTrucar = true;
 
+			Carta c;
+			Resposta resp = atual.age(naoPodeTrucar);
 			switch(resp)
 			{
 				case ACEITA:
-					c = j.jogaCarta(turno >= 1);
+					c = atual.jogaCarta(turno >= 1);
 					cartasJogadas.add(c);
 					break;
 				case AUMENTA:
-					ResultadoTruco res = confrontoTruco(jogadores.get(atual), jogadores.get(prox));
+					Jogador proximo = jogadores.get((pos + 1) % 4);
+					ResultadoTruco res = confrontoTruco(atual, proximo);
 					switch(res)
 					{
 						case ACEITO:
-							c = j.jogaCarta(turno >= 1);
+							c = atual.jogaCarta(turno >= 1);
 							cartasJogadas.add(c);
 							break;
 						case ATAQUE_CORRE:
-							definirVencedor(null, jogadores.get(prox), equipe1, equipe2);
+							definirVencedor(null, proximo, equipe1, equipe2);
 							return; // rodada encerra
 						case DEFESA_CORRE:
-							definirVencedor(null, jogadores.get(atual), equipe1, equipe2);
+							definirVencedor(null, atual, equipe1, equipe2);
 							return; // rodada encerra
 					}
 					break;
 				case CORRE:
-					definirVencedor(null, jogadores.get(prox), equipe1, equipe2);
+					definirVencedor(null, atual, equipe1, equipe2);
 					return; // rodada encerra
 			}
-			
+
 			turno++;
-			atual = prox;
-			prox++;
 		}
 
 		int indiceMaior = this.declaraVencedor(cartasJogadas);

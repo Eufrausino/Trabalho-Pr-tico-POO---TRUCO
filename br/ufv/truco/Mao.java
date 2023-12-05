@@ -107,10 +107,10 @@ public class Mao {
         int Vequipe1 = 0;
         int Vequipe2 = 0;
 
-
+        int rod = 0;
         while ((rodadas.size() < 3) || Vequipe1 == 2 || Vequipe2 == 2) {
             Rodada rodada = new Rodada();
-            rodada.executaRodada(equipe1, equipe2);
+            rodada.executaRodada(equipe1, equipe2, rod++);
             this.rodadas.add(rodada);
 
             if (rodada.getEquipeVencedora() == equipe1) {
