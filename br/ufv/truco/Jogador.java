@@ -25,9 +25,11 @@ public class Jogador {
         cartas.add(carta);
     }
 
-    public Resposta age() {
+    public Resposta age(boolean naoPodeTrucar) {
         System.out.printf("== Jogador (%s) ==\n", nome);
-        while(true) {
+        if(naoPodeTrucar == false)
+        {
+            while(true) {
             System.out.println("Qual ação você deseja fazer?");
             System.out.print("(1) jogar carta, (2) pedir truco, (3) gritar, (4) correr => ");
             int resp = scan.nextInt();
@@ -44,6 +46,26 @@ public class Jogador {
                 default:
                     System.err.println("[!] Resposta não reconhecida");
             }
+         }
+        }
+        else
+        {
+            while(true) {
+            System.out.println("Qual ação você deseja fazer?");
+            System.out.print("(1) jogar carta,(2) gritar,(3) correr => ");
+            int resp = scan.nextInt();
+            switch(resp) {
+                case 1:
+                    return Resposta.ACEITA;
+                case 2:
+                    grita();
+                    break;
+                case 3:
+                    return Resposta.CORRE;
+                default:
+                    System.err.println("[!] Resposta não reconhecida");
+            }
+         }
         }
     }
 
@@ -94,7 +116,7 @@ public class Jogador {
         while(true) {
             System.out.print("Carta a jogar => ");
             indiceEscolhida = scan.nextInt();
-            if(indiceEscolhida >= 1 && indiceEscolhida < i) break;
+            if(indiceEscolhida >= 1 && indiceEscolhida <= i) break;
             else System.err.println("[!] Carta inválida! Escolha novamente");
         }
         boolean continua = true;
