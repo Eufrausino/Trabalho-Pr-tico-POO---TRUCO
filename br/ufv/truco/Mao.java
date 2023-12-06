@@ -51,19 +51,27 @@ public class Mao {
     // 1 para a equipe 1 e 2 para a equipe 2
     public int executaMao(Baralho baralho) {
         int vitorias1 = 0, vitorias2 = 0;
+        int confereEmpate = 0; //Trabalhar com o caso de retorno -1
         distribuiCartas(baralho);
 
         int i = 0;
         while (rodadas.size() < 3 || vitorias1 == 2 || vitorias2 == 2) {
             Rodada rodada = new Rodada();
             // O jogador que inicia a rodada é o último a ter ganhado
+        
             i = rodada.executaRodada(jogadores, qtdJogadores, i);
+            if(i == -1) {
+                confereEmpate++;
+                i = 0;
+                //Deve ser editado, regras do truco a tratar!
+            }
             this.rodadas.add(rodada);
 
             // Um índice de jogador par denota uma vitória da equipe 1;
             // um índice ímpar denota uma vitória da equipe 2
             if(i % 2 == 0) ++vitorias1;
             else ++vitorias2;
+            
         }
         return vitorias1 > vitorias2 ? 1 : 2;
     }
