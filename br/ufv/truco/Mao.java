@@ -30,7 +30,7 @@ public class Mao {
 
     // Distribui cartas aleatorias a todos os jogadores
     private void distribuiCartas(Baralho baralho) {
-        // Embaralha o baralho e descarta quaisquer cartas que os jogadore já tenham
+        // Embaralha o baralho e descarta quaisquer cartas que os jogadores já tenham
         baralho.reiniciar();
         for(Jogador j : jogadores) j.largaCartas();
 
@@ -50,29 +50,34 @@ public class Mao {
     // Executa uma mão, retornando o índice da equipe vencedora; ou seja,
     // 1 para a equipe 1 e 2 para a equipe 2
     public int executaMao(Baralho baralho) {
-        int vitorias1 = 0, vitorias2 = 0;
-        int confereEmpate = 0; //Trabalhar com o caso de retorno -1
+        int vitorias1 = 0, vitorias2 = 0, empates = 0;
         distribuiCartas(baralho);
 
         int i = 0;
         while (rodadas.size() < 3 || vitorias1 == 2 || vitorias2 == 2) {
             Rodada rodada = new Rodada();
             // O jogador que inicia a rodada é o último a ter ganhado
-        
             i = rodada.executaRodada(jogadores, qtdJogadores, i);
-            if(i == -1) {
-                confereEmpate++;
-                i = 0;
-                //Deve ser editado, regras do truco a tratar!
-            }
             this.rodadas.add(rodada);
-
-            // Um índice de jogador par denota uma vitória da equipe 1;
-            // um índice ímpar denota uma vitória da equipe 2
-            if(i % 2 == 0) ++vitorias1;
-            else ++vitorias2;
-            
+            // Pode ser que a rodada tenha decidido o desfecho da mão (truco)
+            if(rodada.terminaMao()) {
+                // Índices pares são vitórias da equipe 1 e os ímpares, da 2
+                System.out.println("Mão foi decidida");
+                if(i % 2 == 0) return 1;
+                else return 2;
+            }
+            // Índices negativos denotam empates, os pares denotam uma
+            // vitória da equipe 1 e os ímpares, uma da equipe 2
+            if(i < 0) {
+                ++empates;
+                i = 0;
+            } else if(i % 2 == 0) {
+                ++vitorias1;
+            } else {
+                ++vitorias2;
+            }
         }
+        // NOTA os empates devem ser levados em consideração
         return vitorias1 > vitorias2 ? 1 : 2;
     }
 }

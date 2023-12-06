@@ -4,6 +4,7 @@ import java.util.ArrayList;
 public class Rodada
 {
 	private int trucado = 0;
+	private boolean terminaMao = false;
 	private Carta cartaVencedora = null;
 
 	public int getTrucado() {
@@ -12,6 +13,10 @@ public class Rodada
 
 	public void setTrucado(int trucado) {
 		this.trucado = trucado;
+	}
+
+	public boolean terminaMao() {
+		return terminaMao;
 	}
 
 	public Carta getCartaVencedora() {
@@ -88,22 +93,33 @@ public class Rodada
 	// índice é utilizado para determinar o jogador vencedor
 	private int declaraVencedor(ArrayList<Carta> cartas) {
 		int indiceMaior = 0;
-		int confereEmpate = 1;
 		Carta maior = cartas.get(0);
 		for(int i = 1; i < cartas.size(); i++) {
 			if(!maior.ganhaDe(cartas.get(i))) {
 				maior = cartas.get(i);
 				indiceMaior = i;
 			}
-			if(maior == cartas.get(i)){
-				confereEmpate++;
+		}
+		// Confere se houve um empate
+		boolean houveEmpate = false;
+		for(int i = 0; i < cartas.size(); ++i) {
+			if(i == indiceMaior) break;
+			if(maior.comparaValor(cartas.get(i)) == 0) {
+				houveEmpate = true;
+				break;
 			}
+
 		}
-		if(confereEmpate > 1)
-		{
-			indiceMaior = -1;
+		return houveEmpate ? -1 : indiceMaior;
+	}
+
+	private void imprimeCartas(ArrayList<Jogador> jogadores, ArrayList<Carta> cartas) {
+		if(cartas.size() == 0) return;
+		System.out.println("== Cartas na mesa ==");
+		for(int i = 0; i < cartas.size(); ++i) {
+			System.out.printf("(%s) %s\n", jogadores.get(i), cartas.get(i));
 		}
-		return indiceMaior;
+		System.out.println();
 	}
 
 	// Executa a rodada com um certo vetor de jogadores (de tamanho qtdJogadores),
@@ -115,6 +131,7 @@ public class Rodada
 
 		// Laço de execução da rodada, itera sobre os jogadores existentes
 		for(int i = 0; i < qtdJogadores; ++i) {
+			imprimeCartas(jogadores, cartasJogadas);
 			int posAtual = (posInicial + i) % qtdJogadores;
 			int posProximo = (posAtual + 1) % qtdJogadores;
 			Jogador atual = jogadores.get(posAtual), proximo;
@@ -136,23 +153,27 @@ public class Rodada
 							cartasJogadas.add(i, c);
 							break;
 						case ATAQUE_CORRE:
-							return posProximo; // rodada encerra
+							terminaMao = true;
+							return posProximo; // a mão encerra com uma derrota para o ataque
 						case DEFESA_CORRE:
-							return posAtual; // rodada encerra
+							terminaMao = true;
+							return posAtual; // a mão encerra com uma vitória para o ataque
 					}
 					break;
 				case CORRE:
+					terminaMao = true;
 					proximo = jogadores.get((posAtual + 1) % qtdJogadores);
-					return posProximo; // rodada encerra
+					return posProximo; // a mão encerra com uma derrota para o jogador atual
 			}
 			turno++;
 		}
 		int indiceMaior = declaraVencedor(cartasJogadas);
-
-		if(indiceMaior == -1){
+		if(indiceMaior == -1) {
+			System.out.println("Empate!");
 			return -1;
 		}
 
+		System.out.printf("O ganhador é o jogador %s!\n\n", jogadores.get(indiceMaior));
 		Carta cartaVencedora = cartasJogadas.get(indiceMaior);
 
 		this.cartaVencedora = cartaVencedora;

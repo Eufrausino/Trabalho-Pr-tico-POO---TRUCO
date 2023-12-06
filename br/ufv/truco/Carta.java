@@ -8,7 +8,9 @@ public class Carta {
 
     public Carta(int valor, Naipe naipe) {
         if(valor < 1 || valor > 10)
-            throw new ExceptionInInitializerError("Valor inválido! " + valor);
+            // Esse é um erro que genuinamente nunca deveria acontecer
+            // Se rolar, o correto é crashar o programa mesmo
+            throw new ExceptionInInitializerError("[?] Carta não foi inicializa corretamente" + valor);
         this.valor = valor;
         this.naipe = naipe;
         encoberta = false;
@@ -16,21 +18,14 @@ public class Carta {
 
     @Override
     public String toString() {
+        if(encoberta) return "???";
         char naipeTexto;
         String valorTexto;
         switch(valor) {
-            case 1:
-                valorTexto = "A";
-                break;
-            case 8:
-                valorTexto = "Q";
-                break;
-            case 9:
-                valorTexto = "J";
-                break;
-            case 10:
-                valorTexto = "K";
-                break;
+            case 1: valorTexto = "A"; break;
+            case 8: valorTexto = "Q"; break;
+            case 9: valorTexto = "J"; break;
+            case 10: valorTexto = "K"; break;
             default:
                 valorTexto = Integer.toString(valor);
                 break;
@@ -47,6 +42,7 @@ public class Carta {
         this.encoberta = encoberta;
     }
 
+    // Compara duas cartas à maneira do strcmp do C
     public int compara(Carta c) {
         if(this.naipe == c.naipe && this.valor == c.valor)
             return 0;
@@ -75,15 +71,53 @@ public class Carta {
         if(c.naipe == Naipe.OUROS && c.valor == 7)
             return -1;
 
-        // Se o valor das cartas estiver entre 1 e 3, ganha o maior número
+        // Após isso vem as cartas 3, 2 e 1, independente do naipe
         if(this.valor >= 1 && this.valor <= 3 && c.valor >= 1 && c.valor <= 3)
+            // Se ambas as cartas estão nesse intervalo, o maior número vence
             return this.valor > c.valor ? 1 : -1;
+        if(this.valor >= 1 && this.valor <= 3)
+            return 1;
+        if(c.valor >= 1 && c.valor <= 3)
+            return -1;
 
-        // Abaixo disso, se o valor das cartas estiver entre 4 e 10, o mesmo acontece
+        // Após isso vem as cartas entre 4 e 10, também independente do naipe
         if(this.valor >= 4 && this.valor <= 10 && c.valor >= 4 && c.valor <= 10)
+            // Se ambas as cartas estão nesse intervalo, o maior número vence
             return this.valor > c.valor ? 1 : -1;
+        if(this.valor >= 4 && this.valor <= 10)
+            return 1;
+        if(c.valor >= 4 && c.valor <= 10)
+            return -1;
 
-        return 0; // não deveria acontecer
+        // Nunca deveria acontecer
+        throw new Error("[?] Números estranhos nas cartas...");
+    }
+
+    // Compara duas cartas exclusivamente pelo seu valor numérico
+    public int comparaValor(Carta c) {
+        if(this.valor == c.valor) return 0;
+
+        // Primeiro vem as cartas 3, 2 e 1
+        if(this.valor >= 1 && this.valor <= 3 && c.valor >= 1 && c.valor <= 3)
+            // Se ambas as cartas estão nesse intervalo, o maior número vence
+            return this.valor > c.valor ? 1 : -1;
+        if(this.valor >= 1 && this.valor <= 3)
+            return 1;
+        if(c.valor >= 1 && c.valor <= 3)
+            return -1;
+
+        // Após isso vem as cartas entre 4 e 10
+        if(this.valor >= 4 && this.valor <= 10 && c.valor >= 4 && c.valor <= 10)
+            // Se ambas as cartas estão nesse intervalo, o maior número vence
+            return this.valor > c.valor ? 1 : -1;
+        if(this.valor >= 4 && this.valor <= 10)
+            return 1;
+        if(c.valor >= 4 && c.valor <= 10)
+            return -1;
+
+        // Nunca deveria acontecer
+        throw new Error("[?] Números estranhos nas cartas...");
+
     }
 
     public boolean ganhaDe(Carta c) {

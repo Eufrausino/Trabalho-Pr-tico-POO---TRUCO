@@ -21,6 +21,15 @@ public class Jogador {
         this.ehMaquina = ehMaquina;
     }
 
+    public String getNome() {
+        return nome;
+    }
+
+    @Override
+    public String toString() {
+        return nome;
+    }
+
     public void largaCartas() {
         cartas.clear();
     }
@@ -31,45 +40,42 @@ public class Jogador {
 
     public Resposta age(boolean naoPodeTrucar) {
         System.out.printf("== Jogador (%s) ==\n", nome);
-        if(naoPodeTrucar == false)
-        {
+        if(!naoPodeTrucar) {
             while(true) {
-            System.out.println("Qual ação você deseja fazer?");
-            System.out.print("(1) jogar carta, (2) pedir truco, (3) gritar, (4) correr => ");
-            int resp = scan.nextInt();
-            switch(resp) {
-                case 1:
-                    return Resposta.ACEITA;
-                case 2:
-                    return Resposta.AUMENTA;
-                case 3:
-                    grita();
-                    break;
-                case 4:
-                    return Resposta.CORRE;
-                default:
-                    System.err.println("[!] Resposta não reconhecida");
+                System.out.println("Qual ação você deseja fazer?");
+                System.out.print("(1) jogar carta, (2) pedir truco, (3) gritar, (4) correr => ");
+                int resp = scan.nextInt();
+                switch(resp) {
+                    case 1:
+                        return Resposta.ACEITA;
+                    case 2:
+                        return Resposta.AUMENTA;
+                    case 3:
+                        grita();
+                        break;
+                    case 4:
+                        return Resposta.CORRE;
+                    default:
+                        System.err.println("[!] Resposta não reconhecida");
+                }
             }
-         }
-        }
-        else
-        {
+        } else {
             while(true) {
-            System.out.println("Qual ação você deseja fazer?");
-            System.out.print("(1) jogar carta,(2) gritar,(3) correr => ");
-            int resp = scan.nextInt();
-            switch(resp) {
-                case 1:
-                    return Resposta.ACEITA;
-                case 2:
-                    grita();
-                    break;
-                case 3:
-                    return Resposta.CORRE;
-                default:
-                    System.err.println("[!] Resposta não reconhecida");
+                System.out.println("Qual ação você deseja fazer?");
+                System.out.print("(1) jogar carta, (2) gritar, (3) correr => ");
+                int resp = scan.nextInt();
+                switch(resp) {
+                    case 1:
+                        return Resposta.ACEITA;
+                    case 2:
+                        grita();
+                        break;
+                    case 3:
+                        return Resposta.CORRE;
+                    default:
+                        System.err.println("[!] Resposta não reconhecida");
+                }
             }
-         }
         }
     }
 
