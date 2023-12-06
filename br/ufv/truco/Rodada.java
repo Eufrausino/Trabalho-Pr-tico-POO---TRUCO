@@ -92,23 +92,30 @@ public class Rodada
 	// Determina o índice da maior carta no vetor das cartas jogadas; esse
 	// índice é utilizado para determinar o jogador vencedor
 	private int declaraVencedor(ArrayList<Carta> cartas) {
+		int i = 0;
 		int indiceMaior = 0;
 		Carta maior = cartas.get(0);
-		for(int i = 1; i < cartas.size(); i++) {
-			if(!maior.ganhaDe(cartas.get(i))) {
-				maior = cartas.get(i);
+		for(Carta carta : cartas) {
+			if(!maior.ganhaDe(carta)) {
+				maior = carta;
 				indiceMaior = i;
 			}
+			++i;
 		}
+		i = 0;
 		// Confere se houve um empate
 		boolean houveEmpate = false;
-		for(int i = 0; i < cartas.size(); ++i) {
+		for(Carta carta : cartas) {
 			if(i == indiceMaior) break;
-			if(maior.comparaValor(cartas.get(i)) == 0) {
-				houveEmpate = true;
-				break;
+			if(maior.getValor() == carta.getValor()) {
+				// A carta deve ser igual em valor, mas não superior em "poder" para que
+				// ocorra um empate
+				if(!maior.ganhaDe(carta)) {
+					houveEmpate = true;
+					break;
+				}
 			}
-
+			++i;
 		}
 		return houveEmpate ? -1 : indiceMaior;
 	}

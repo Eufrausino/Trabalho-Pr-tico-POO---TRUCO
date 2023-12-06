@@ -16,6 +16,10 @@ public class Carta {
         encoberta = false;
     }
 
+    public int getValor() {
+        return valor;
+    }
+
     @Override
     public String toString() {
         if(encoberta) return "???";
@@ -44,6 +48,10 @@ public class Carta {
 
     // Compara duas cartas à maneira do strcmp do C
     public int compara(Carta c) {
+        // Cartas encobertas não tem valor algum
+        if(this.encoberta) return -1;
+        if(c.encoberta) return 1;
+
         if(this.naipe == c.naipe && this.valor == c.valor)
             return 0;
 
@@ -91,33 +99,6 @@ public class Carta {
 
         // Nunca deveria acontecer
         throw new Error("[?] Números estranhos nas cartas...");
-    }
-
-    // Compara duas cartas exclusivamente pelo seu valor numérico
-    public int comparaValor(Carta c) {
-        if(this.valor == c.valor) return 0;
-
-        // Primeiro vem as cartas 3, 2 e 1
-        if(this.valor >= 1 && this.valor <= 3 && c.valor >= 1 && c.valor <= 3)
-            // Se ambas as cartas estão nesse intervalo, o maior número vence
-            return this.valor > c.valor ? 1 : -1;
-        if(this.valor >= 1 && this.valor <= 3)
-            return 1;
-        if(c.valor >= 1 && c.valor <= 3)
-            return -1;
-
-        // Após isso vem as cartas entre 4 e 10
-        if(this.valor >= 4 && this.valor <= 10 && c.valor >= 4 && c.valor <= 10)
-            // Se ambas as cartas estão nesse intervalo, o maior número vence
-            return this.valor > c.valor ? 1 : -1;
-        if(this.valor >= 4 && this.valor <= 10)
-            return 1;
-        if(c.valor >= 4 && c.valor <= 10)
-            return -1;
-
-        // Nunca deveria acontecer
-        throw new Error("[?] Números estranhos nas cartas...");
-
     }
 
     public boolean ganhaDe(Carta c) {
