@@ -3,8 +3,8 @@ package br.ufv.truco;
 public class Truco {
 	public static void main(String[] args) {
 
-		// instanciando a tela do jogo
 		// TODO TelaDeJogo
+		// instanciando a tela do jogo
 
 		// instanciando os jogadores
 		Jogador jogador1 = new Jogador("J1");
@@ -16,12 +16,8 @@ public class Truco {
 		Equipe equipe1 = new Equipe(jogador1, jogador2);
 		Equipe equipe2 = new Equipe(jogador3, jogador4);
 
-		// instanciando o baralho
-		Baralho baralho = new Baralho();
-
 		// instanciando a partida
-		Partida partida = new Partida(equipe1, equipe2, baralho);
-
+		Partida partida = new Partida(equipe1, equipe2);
 		partida.executaPartida();
 	}
 }

@@ -2,14 +2,20 @@ package br.ufv.truco;
 import java.util.ArrayList;
 
 public class Jogo {
-    public Baralho baralho = new Baralho();
+    private Equipe equipe1;
+    private Equipe equipe2;
     private ArrayList<Mao> maos = new ArrayList<>();
+
+    public Jogo(Equipe equipe1, Equipe equipe2) {
+        this.equipe1 = equipe1;
+        this.equipe2 = equipe2;
+    }
 
     public ArrayList<Mao> getMaos() {
         return this.maos;
     }
 
-    public int executajogo(Equipe equipe1, Equipe equipe2) {
+    public int executajogo(Baralho baralho) {
         int jogadorInicial = 0;
         equipe1.reiniciaPontos();
         equipe2.reiniciaPontos();
