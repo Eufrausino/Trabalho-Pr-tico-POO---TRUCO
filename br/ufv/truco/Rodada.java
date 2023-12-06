@@ -4,8 +4,7 @@ import java.util.ArrayList;
 public class Rodada
 {
 	private int trucado = 0;
-	private Jogador jogadorVencedor;
-	private Carta cartaVencedora;
+	private Carta cartaVencedora = null;
 
 	public int getTrucado() {
 		return trucado;
@@ -15,17 +14,8 @@ public class Rodada
 		this.trucado = trucado;
 	}
 
-	public Jogador getVencedor() {
-		return jogadorVencedor;
-	}
-
 	public Carta getCartaVencedora() {
 		return cartaVencedora;
-	}
-
-	private void definirVencedor(Jogador jogadorVencedor, Carta cartaVencedora) {
-		this.jogadorVencedor = jogadorVencedor;
-		this.cartaVencedora = cartaVencedora;
 	}
 
 	// Pede truco, aumentando o valor da rodada. Retorna false caso não seja
@@ -98,12 +88,20 @@ public class Rodada
 	// índice é utilizado para determinar o jogador vencedor
 	private int declaraVencedor(ArrayList<Carta> cartas) {
 		int indiceMaior = 0;
+		int confereEmpate = 1;
 		Carta maior = cartas.get(0);
 		for(int i = 1; i < cartas.size(); i++) {
 			if(!maior.ganhaDe(cartas.get(i))) {
 				maior = cartas.get(i);
 				indiceMaior = i;
 			}
+			if(maior == cartas.get(i)){
+				confereEmpate++;
+			}
+		}
+		if(confereEmpate > 1)
+		{
+			indiceMaior = -1;
 		}
 		return indiceMaior;
 	}
@@ -138,25 +136,26 @@ public class Rodada
 							cartasJogadas.add(i, c);
 							break;
 						case ATAQUE_CORRE:
-							definirVencedor(proximo, null);
 							return posProximo; // rodada encerra
 						case DEFESA_CORRE:
-							definirVencedor(atual, null);
 							return posAtual; // rodada encerra
 					}
 					break;
 				case CORRE:
 					proximo = jogadores.get((posAtual + 1) % qtdJogadores);
-					definirVencedor(proximo, null);
 					return posProximo; // rodada encerra
 			}
 			turno++;
 		}
 		int indiceMaior = declaraVencedor(cartasJogadas);
-		Carta cartaVencedora = cartasJogadas.get(indiceMaior);
-		jogadorVencedor = jogadores.get(indiceMaior);
 
-		definirVencedor(jogadorVencedor, cartaVencedora);
+		if(indiceMaior == -1){
+			return -1;
+		}
+
+		Carta cartaVencedora = cartasJogadas.get(indiceMaior);
+
+		this.cartaVencedora = cartaVencedora;
 		return indiceMaior;
 	}
 }
