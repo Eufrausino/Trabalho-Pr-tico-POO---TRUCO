@@ -13,8 +13,8 @@ public class Truco {
 		Jogador jogador4 = new Jogador("J4");
 
 		// instanciando as equipes
-		Equipe equipe1 = new Equipe(1, jogador1, jogador2);
-		Equipe equipe2 = new Equipe(2, jogador3, jogador4);
+		Equipe equipe1 = new Equipe(jogador1, jogador2);
+		Equipe equipe2 = new Equipe(jogador3, jogador4);
 
 		// instanciando o baralho
 		Baralho baralho = new Baralho();

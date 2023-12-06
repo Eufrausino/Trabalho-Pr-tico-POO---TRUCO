@@ -1,11 +1,14 @@
 package br.ufv.truco;
 import java.util.ArrayList;
 
-public class Rodada
-{
-	private int trucado = 0;
+public class Rodada {
+	private int trucado;
 	private boolean terminaMao = false;
 	private Carta cartaVencedora = null;
+
+	public Rodada(int trucado) {
+		this.trucado = trucado;
+	}
 
 	public int getTrucado() {
 		return trucado;
