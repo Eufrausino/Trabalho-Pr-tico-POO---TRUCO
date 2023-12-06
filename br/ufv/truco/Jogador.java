@@ -21,6 +21,10 @@ public class Jogador {
         this.ehMaquina = ehMaquina;
     }
 
+    public void largaCartas() {
+        cartas.clear();
+    }
+
     public void recebeCarta(Carta carta) {
         cartas.add(carta);
     }

@@ -2,43 +2,37 @@ package br.ufv.truco;
 import java.util.ArrayList;
 
 public class Mao {
-    private ArrayList<Rodada> rodadas;
-    private ArrayList<Jogador> ordemjogadores;
-    private int valor;
+    private int valor = 2;
+    private int qtdJogadores;
+    private ArrayList<Rodada> rodadas = new ArrayList<>();
+    private ArrayList<Jogador> jogadores = new ArrayList<>();
 
-    public Mao() {
-        this.rodadas = new ArrayList<Rodada>();
-        this.ordemjogadores = new ArrayList<Jogador>();
-        this.valor = 2;
+    public Mao(Equipe eq1, Equipe eq2) {
+        qtdJogadores = 2;
+        // Adiciona os dois jogadores que certamente estarão nas equipes
+        jogadores.add(eq1.getJogador1());
+        jogadores.add(eq2.getJogador1());
+        // Adiciona os demais jogadores se existirem; 1x1 ou 2x2?
+        if(eq1.ehDupla() && eq2.ehDupla()) {
+            qtdJogadores = 4;
+            jogadores.add(eq1.getJogador2());
+            jogadores.add(eq2.getJogador2());
+        }
     }
 
     public ArrayList<Rodada> getRodadas() {
-        return this.rodadas;
-    }
-
-    public ArrayList<Jogador> getOrdemjogadores() {
-        return this.ordemjogadores;
+        return rodadas;
     }
 
     public int getValor() {
-        return this.valor;
+        return valor;
     }
 
-    public void setRodadas(ArrayList<Rodada> rodadas) {
-        this.rodadas = rodadas;
-    }
-
-    public void setOrdemjogadores(ArrayList<Jogador> ordemjogadores) {
-        this.ordemjogadores = ordemjogadores;
-    }
-
-    public void setValor(int valor) {
-        this.valor = valor;
-    }
-
-    public void distribuiCartas(ArrayList<Jogador> jogadores, Baralho baralho) {
-        // Embaralha o baralho
+    // Distribui cartas aleatorias a todos os jogadores
+    private void distribuiCartas(Baralho baralho) {
+        // Embaralha o baralho e descarta quaisquer cartas que os jogadore já tenham
         baralho.reiniciar();
+        for(Jogador j : jogadores) j.largaCartas();
 
         // Distribui as cartas
         for (int i = 0; i < 3; i++) {
@@ -53,72 +47,24 @@ public class Mao {
         }
     }
 
-    //Função que define a ordem dos jogadores na mão, para um jogo de 2 jogadores
-    public void defineOrdemJogadores(Jogador jogador1, Jogador jogador2) {
-    if ((rodadas.get(rodadas.size() - 1).jogadorVencedor == null) || (rodadas.get(rodadas.size() - 1).jogadorVencedor == jogador1) || (rodadas.size() == 0)){
-        this.ordemjogadores.add(jogador1);
-        this.ordemjogadores.add(jogador2);
-    }
+    // Executa uma mão, retornando o índice da equipe vencedora; ou seja,
+    // 1 para a equipe 1 e 2 para a equipe 2
+    public int executaMao(Baralho baralho) {
+        int vitorias1 = 0, vitorias2 = 0;
+        distribuiCartas(baralho);
 
-    else {
-        this.ordemjogadores.add(jogador2);
-        this.ordemjogadores.add(jogador1);
-        }
-    }
-
-    //Função que define a ordem dos jogadores na mão, para um jogo de 4 jogadores
-    public void defineOrdemJogadores(Equipe equipe,Equipe equipe2) {
-
-        if (equipe.getJogador2() == null && equipe2.getJogador2() == null) {
-            defineOrdemJogadores(equipe.getJogador1(), equipe2.getJogador1());
-        }
-
-        else {
-
-        //JogadorMaiorCarta é o jogador que possui a maior carta da rodada, nome provisório de função
-            if ((rodadas.get(rodadas.size() - 1).jogadorVencedor == null) || (rodadas.get(rodadas.size() - 1).jogadorVencedor == equipe.getJogador1()) ||  (rodadas.size() == 0)){
-                this.ordemjogadores.add(equipe.getJogador1());
-                this.ordemjogadores.add(equipe2.getJogador1());
-                this.ordemjogadores.add(equipe.getJogador2());
-                this.ordemjogadores.add(equipe2.getJogador2());
-
-            } else if (rodadas.get(rodadas.size() - 1).jogadorVencedor == equipe2.getJogador1()) {
-                this.ordemjogadores.add(equipe2.getJogador1());
-                this.ordemjogadores.add(equipe.getJogador2());
-                this.ordemjogadores.add(equipe2.getJogador2());
-                this.ordemjogadores.add(equipe.getJogador1());
-
-            } else if (rodadas.get(rodadas.size() - 1).jogadorVencedor == equipe.getJogador2()) {
-                this.ordemjogadores.add(equipe.getJogador2());
-                this.ordemjogadores.add(equipe2.getJogador2());
-                this.ordemjogadores.add(equipe.getJogador1());
-                this.ordemjogadores.add(equipe2.getJogador1());
-            } else {
-                this.ordemjogadores.add(equipe2.getJogador2());
-                this.ordemjogadores.add(equipe.getJogador1());
-                this.ordemjogadores.add(equipe2.getJogador1());
-                this.ordemjogadores.add(equipe.getJogador2());
-            }
-        }
-    }
-
-    //Função que executa uma Mão
-    public void executaMao(Equipe equipe1, Equipe equipe2) {
-        int Vequipe1 = 0;
-        int Vequipe2 = 0;
-
-        int rod = 0;
-        while ((rodadas.size() < 3) || Vequipe1 == 2 || Vequipe2 == 2) {
+        int i = 0;
+        while (rodadas.size() < 3 || vitorias1 == 2 || vitorias2 == 2) {
             Rodada rodada = new Rodada();
-            rodada.executaRodada(equipe1, equipe2, rod++);
+            // O jogador que inicia a rodada é o último a ter ganhado
+            i = rodada.executaRodada(jogadores, qtdJogadores, i);
             this.rodadas.add(rodada);
 
-            if (rodada.getEquipeVencedora() == equipe1) {
-                Vequipe1++;
-            } else {
-                Vequipe2++;
-            }
+            // Um índice de jogador par denota uma vitória da equipe 1;
+            // um índice ímpar denota uma vitória da equipe 2
+            if(i % 2 == 0) ++vitorias1;
+            else ++vitorias2;
         }
-
+        return vitorias1 > vitorias2 ? 1 : 2;
     }
 }

@@ -2,20 +2,14 @@ package br.ufv.truco;
 
 public class Equipe {
     private int id;
-
     private int pontos;
-
     private Jogador jogador1;
-
     private Jogador jogador2; // pode ser nulo
-
-    private boolean trucado;
 
     public Equipe(int id, Jogador jogadorSozinho) {
         this.id = id;
         jogador1 = jogadorSozinho;
         jogador2 = null;
-        trucado = false;
         pontos = 0;
     }
 
@@ -23,7 +17,6 @@ public class Equipe {
         this.id = id;
         this.jogador1 = jogador1;
         this.jogador2 = jogador2;
-        trucado = false;
         pontos = 0;
     }
 
@@ -31,20 +24,16 @@ public class Equipe {
         return id;
     }
 
-    public boolean estaTrucado() {
-        return trucado;
-    }
-
     public Jogador getJogador1() {
         return jogador1;
     }
 
-    public Jogador getJogador2() {
-        return jogador2;
+    public boolean ehDupla() {
+        return jogador2 != null;
     }
 
-    public void setTrucado(boolean trucado) {
-        this.trucado = trucado;
+    public Jogador getJogador2() {
+        return jogador2;
     }
 
     public int getPontos() {

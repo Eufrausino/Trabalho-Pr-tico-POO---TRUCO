@@ -3,33 +3,33 @@ import java.util.ArrayList;
 
 public class Rodada
 {
-	private Equipe equipeVencedora;
 	private int trucado = 0;
-	public Jogador jogadorVencedor;
-	private Baralho baralho = new Baralho();
+	private Jogador jogadorVencedor;
+	private Carta cartaVencedora;
 
-	public Rodada() {}
-
-	public void setEquipeVencedora(Equipe EquipeVencedora)
-	{
-		this.equipeVencedora = EquipeVencedora;
-	}
-
-	public Equipe getEquipeVencedora()
-	{
-		return this.equipeVencedora;
-	}
-
-	public void setTrucado(int Trucado)
-	{
-		this.trucado = Trucado;
-	}
-
-	public int getTrucado()
-	{
+	public int getTrucado() {
 		return trucado;
 	}
 
+	public void setTrucado(int trucado) {
+		this.trucado = trucado;
+	}
+
+	public Jogador getVencedor() {
+		return jogadorVencedor;
+	}
+
+	public Carta getCartaVencedora() {
+		return cartaVencedora;
+	}
+
+	private void definirVencedor(Jogador jogadorVencedor, Carta cartaVencedora) {
+		this.jogadorVencedor = jogadorVencedor;
+		this.cartaVencedora = cartaVencedora;
+	}
+
+	// Pede truco, aumentando o valor da rodada. Retorna false caso não seja
+	// possível pedir truco; do contrário, efetua a operação e retorna true
 	private boolean trucar() {
 		if(trucado >= 4) return false;
 		++trucado;
@@ -50,8 +50,11 @@ public class Rodada
 		return true;
 	}
 
-	public ResultadoTruco confrontoTruco(Jogador ataque, Jogador defesa)
-	{
+	// Um confronto de truco é iniciado por um jogador (o ataque) e demanda a
+	// resposta de outro (a defesa). É a única forma de aumentar o valor de uma
+	// rodada, podendo também culminar no fim da partida
+	private ResultadoTruco confrontoTruco(Jogador ataque, Jogador defesa) {
+		// Caso não seja possível trucar, nada acontece
 		if(!trucar()) return ResultadoTruco.ACEITO;
 		while(true) {
 			// Resposta da defesa
@@ -91,97 +94,69 @@ public class Rodada
 		}
 	}
 
-	public int declaraVencedor(ArrayList<Carta> cartas)
-	{
+	// Determina o índice da maior carta no vetor das cartas jogadas; esse
+	// índice é utilizado para determinar o jogador vencedor
+	private int declaraVencedor(ArrayList<Carta> cartas) {
+		int indiceMaior = 0;
 		Carta maior = cartas.get(0);
-
-		for(int i = 1; i < cartas.size(); i++)
-		{
-			if(!maior.ganhaDe(cartas.get(i)))
-			{
+		for(int i = 1; i < cartas.size(); i++) {
+			if(!maior.ganhaDe(cartas.get(i))) {
 				maior = cartas.get(i);
+				indiceMaior = i;
 			}
 		}
-
-		return cartas.indexOf(maior);
+		return indiceMaior;
 	}
 
-	public void executaRodada(Equipe equipe1, Equipe equipe2, int posInicial)
-	{
-		ArrayList<Jogador> jogadores = new ArrayList<Jogador>();
-		jogadores.add(equipe1.getJogador1());
-		jogadores.add(equipe1.getJogador2());
-		jogadores.add(equipe2.getJogador1());
-		jogadores.add(equipe2.getJogador2());
-
-		// Distribui as cartas para cada um dos jogadores
-		for(Jogador j : jogadores) {
-			for(int i = 0; i < 3; ++i)
-				if(j != null)
-					j.recebeCarta(baralho.retiraCartaAleatoria());
-		}
-
+	// Executa a rodada com um certo vetor de jogadores (de tamanho qtdJogadores),
+	// começando de um índice em particular, retornando o índice do jogador ganhador
+	public int executaRodada(ArrayList<Jogador> jogadores, int qtdJogadores, int posInicial) {
 		int turno = 0;
 		boolean naoPodeTrucar = false;
-
 		ArrayList<Carta> cartasJogadas = new ArrayList<Carta>();
 
-		for(int i = 0; i < 4; ++i)
-		{
-			int pos = (posInicial + i) % 4;
-			Jogador atual = jogadores.get(pos);
-			if(i == 3) naoPodeTrucar = true;
+		// Laço de execução da rodada, itera sobre os jogadores existentes
+		for(int i = 0; i < qtdJogadores; ++i) {
+			int posAtual = (posInicial + i) % qtdJogadores;
+			int posProximo = (posAtual + 1) % qtdJogadores;
+			Jogador atual = jogadores.get(posAtual), proximo;
+			if(i == qtdJogadores - 1) naoPodeTrucar = true;
 
 			Carta c;
 			Resposta resp = atual.age(naoPodeTrucar);
-			switch(resp)
-			{
+			switch(resp) {
 				case ACEITA:
 					c = atual.jogaCarta(turno >= 1);
-					cartasJogadas.add(c);
+					cartasJogadas.add(i, c);
 					break;
 				case AUMENTA:
-					Jogador proximo = jogadores.get((pos + 1) % 4);
+					proximo = jogadores.get(posProximo);
 					ResultadoTruco res = confrontoTruco(atual, proximo);
-					switch(res)
-					{
+					switch(res) {
 						case ACEITO:
 							c = atual.jogaCarta(turno >= 1);
-							cartasJogadas.add(c);
+							cartasJogadas.add(i, c);
 							break;
 						case ATAQUE_CORRE:
-							definirVencedor(null, proximo, equipe1, equipe2);
-							return; // rodada encerra
+							definirVencedor(proximo, null);
+							return posProximo; // rodada encerra
 						case DEFESA_CORRE:
-							definirVencedor(null, atual, equipe1, equipe2);
-							return; // rodada encerra
+							definirVencedor(atual, null);
+							return posAtual; // rodada encerra
 					}
 					break;
 				case CORRE:
-					definirVencedor(null, atual, equipe1, equipe2);
-					return; // rodada encerra
+					proximo = jogadores.get((posAtual + 1) % qtdJogadores);
+					definirVencedor(proximo, null);
+					return posProximo; // rodada encerra
 			}
-
 			turno++;
 		}
-
-		int indiceMaior = this.declaraVencedor(cartasJogadas);
+		int indiceMaior = declaraVencedor(cartasJogadas);
 		Carta cartaVencedora = cartasJogadas.get(indiceMaior);
 		jogadorVencedor = jogadores.get(indiceMaior);
 
-		definirVencedor(cartaVencedora, jogadorVencedor, equipe1, equipe2);
-	}
-
-	public void definirVencedor(Carta CartaVencedora, Jogador jogadorVencedor, Equipe e1, Equipe e2)
-	{
-		if(jogadorVencedor.equals(e1.getJogador1()) || jogadorVencedor.equals(e1.getJogador2()))
-		{
-			this.equipeVencedora = e1;
-		}
-
-		if(jogadorVencedor.equals(e2.getJogador1()) || jogadorVencedor.equals(e2.getJogador2()))
-		{
-			this.equipeVencedora = e2;
-		}
+		definirVencedor(jogadorVencedor, cartaVencedora);
+		return indiceMaior;
 	}
 }
