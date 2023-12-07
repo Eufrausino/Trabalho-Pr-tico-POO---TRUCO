@@ -94,9 +94,10 @@ public class Rodada {
 
 	// Determina o índice da maior carta no vetor das cartas jogadas; esse
 	// índice é utilizado para determinar o jogador vencedor
-	private int declaraVencedor(ArrayList<Carta> cartas) {
+	private int declaraVencedor(ArrayList<Carta> cartas, int posInicial) {
 		int i = 0;
 		int indiceMaior = 0;
+		int indiceEmpate = 0;
 		Carta maior = cartas.get(0);
 		for(Carta carta : cartas) {
 			if(!maior.ganhaDe(carta)) {
@@ -115,12 +116,13 @@ public class Rodada {
 				// ocorra um empate
 				if(!maior.ganhaDe(carta)) {
 					houveEmpate = true;
+					indiceEmpate = i;
 					break;
 				}
 			}
 			++i;
 		}
-		return houveEmpate ? -1 : indiceMaior;
+		return houveEmpate ? -1 * (indiceEmpate + 1) : indiceMaior;
 	}
 
 	private void imprimeCartas(ArrayList<Jogador> jogadores, ArrayList<Carta> cartas) {
@@ -177,10 +179,13 @@ public class Rodada {
 			}
 			turno++;
 		}
-		int indiceMaior = declaraVencedor(cartasJogadas);
-		if(indiceMaior == -1) {
+		int indiceMaior = declaraVencedor(cartasJogadas, posInicial);
+		if(indiceMaior < 0) {
 			System.out.println("Empate!");
-			return -1;
+			//A ideia é pegar o jogador a direita do que empatou,
+			//caso a soma do indiceEmpate com 1 supere 3, volta para o primeiro jogador
+			if(indiceMaior <= -4) indiceMaior = 0;
+			return indiceMaior;
 		}
 
 		System.out.printf("O ganhador é o jogador %s!\n\n", jogadores.get(indiceMaior));
