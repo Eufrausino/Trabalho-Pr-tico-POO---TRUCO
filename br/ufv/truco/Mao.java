@@ -56,16 +56,15 @@ public class Mao {
     // Executa uma mão, retornando o índice da equipe vencedora; ou seja,
     // 1 para a equipe 1 e 2 para a equipe 2
     public int executaMao(int posInicial, Baralho baralho) {
-        int trucado = 0;
+        int trucado = 0, numRodada = 0;
         int vitorias1 = 0, vitorias2 = 0, empates = 0;
         distribuiCartas(baralho);
-        
-        int conta_rodada = 0;
+
 
         int i = posInicial;
-        while (rodadas.size() < 3 || vitorias1 == 2 || vitorias2 == 2) {
+        while (numRodada < 3 || vitorias1 == 2 || vitorias2 == 2) {
             Rodada rodada = new Rodada(trucado);
-            System.out.println("\n=== RODADA " + ++conta_rodada + " ===\n\n");
+            System.out.println("\n=== RODADA " + ++numRodada + " ===\n");
             // O jogador que inicia a rodada é o último a ter ganhado
             i = rodada.executaRodada(jogadores, qtdJogadores, i);
             this.rodadas.add(rodada);

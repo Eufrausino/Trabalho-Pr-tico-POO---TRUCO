@@ -16,6 +16,7 @@ public class Jogo {
     }
 
     public int executajogo(Baralho baralho) {
+        int conta = 1;
         int jogadorInicial = 0;
         equipe1.reiniciaPontos();
         equipe2.reiniciaPontos();
@@ -30,6 +31,9 @@ public class Jogo {
             int pontos = mao.getValor();
             if(eq == 1) equipe1.adicionaPontos(pontos);
             else equipe2.adicionaPontos(pontos);
+            System.out.printf("Mão #%d encerrada\n", conta++);
+            System.out.printf("Equipe 1 tem %d pontos\n", equipe1.getPontos());
+            System.out.printf("Equipe 2 tem %d pontos\n", equipe2.getPontos());
         }
         return equipe1.getPontos() > equipe2.getPontos() ? 1 : 2;
     }
