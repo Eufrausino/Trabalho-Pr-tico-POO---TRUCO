@@ -59,10 +59,13 @@ public class Mao {
         int trucado = 0;
         int vitorias1 = 0, vitorias2 = 0, empates = 0;
         distribuiCartas(baralho);
+        
+        int conta_rodada = 0;
 
         int i = posInicial;
         while (rodadas.size() < 3 || vitorias1 == 2 || vitorias2 == 2) {
             Rodada rodada = new Rodada(trucado);
+            System.out.println("Rodada: " + ++conta_rodada);
             // O jogador que inicia a rodada é o último a ter ganhado
             i = rodada.executaRodada(jogadores, qtdJogadores, i);
             this.rodadas.add(rodada);
