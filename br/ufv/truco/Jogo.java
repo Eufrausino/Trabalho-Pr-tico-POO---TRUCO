@@ -24,7 +24,8 @@ public class Jogo {
         while(equipe1.getPontos() < 12 && equipe2.getPontos() < 12) {
             // Executa uma mão convencional com as equipes
             Mao mao = new Mao(equipe1, equipe2);
-            int eq = mao.executaMao(jogadorInicial++, baralho);
+            int eq = mao.executaMao(jogadorInicial, baralho);
+            ++jogadorInicial;
             maos.add(mao);
 
             // Aumenta a pontuação da equipe adequada

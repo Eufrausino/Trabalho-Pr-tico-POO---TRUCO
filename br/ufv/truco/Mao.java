@@ -62,12 +62,13 @@ public class Mao {
 
 
         int i = posInicial;
-        while (numRodada < 3 || vitorias1 == 2 || vitorias2 == 2) {
+        while (numRodada < 3 && vitorias1 < 2 && vitorias2 < 2) {
             Rodada rodada = new Rodada(trucado);
             System.out.println("\n=== RODADA " + ++numRodada + " ===\n");
             // O jogador que inicia a rodada é o último a ter ganhado
             i = rodada.executaRodada(jogadores, qtdJogadores, i);
             this.rodadas.add(rodada);
+
             // Determina-se quantos pontos a mão vale a partir de cada rodada
             if(trucado < rodada.getTrucado()) {
                 trucado = rodada.getTrucado();
@@ -83,8 +84,8 @@ public class Mao {
             // Índices negativos denotam empates, os pares denotam uma
             // vitória da equipe 1 e os ímpares, uma da equipe 2
             if(i < 0) {
+                i = -1 * (i + 1); // próximo jogador é o responsável pelo empate
                 ++empates;
-                i = 0;
             } else if(i % 2 == 0) {
                 ++vitorias1;
             } else {

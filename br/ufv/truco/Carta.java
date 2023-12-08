@@ -80,18 +80,22 @@ public class Carta {
             return -1;
 
         // Após isso vem as cartas 3, 2 e 1, independente do naipe
-        if(this.valor >= 1 && this.valor <= 3 && c.valor >= 1 && c.valor <= 3)
+        if(this.valor >= 1 && this.valor <= 3 && c.valor >= 1 && c.valor <= 3) {
             // Se ambas as cartas estão nesse intervalo, o maior número vence
+            if(this.valor == c.valor) return 0;
             return this.valor > c.valor ? 1 : -1;
+        }
         if(this.valor >= 1 && this.valor <= 3)
             return 1;
         if(c.valor >= 1 && c.valor <= 3)
             return -1;
 
         // Após isso vem as cartas entre 4 e 10, também independente do naipe
-        if(this.valor >= 4 && this.valor <= 10 && c.valor >= 4 && c.valor <= 10)
+        if(this.valor >= 4 && this.valor <= 10 && c.valor >= 4 && c.valor <= 10) {
             // Se ambas as cartas estão nesse intervalo, o maior número vence
+            if(this.valor == c.valor) return 0;
             return this.valor > c.valor ? 1 : -1;
+        }
         if(this.valor >= 4 && this.valor <= 10)
             return 1;
         if(c.valor >= 4 && c.valor <= 10)

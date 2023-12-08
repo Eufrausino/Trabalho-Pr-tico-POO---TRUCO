@@ -94,33 +94,33 @@ public class Rodada {
 
 	// Determina o índice da maior carta no vetor das cartas jogadas; esse
 	// índice é utilizado para determinar o jogador vencedor
-	private int declaraVencedor(ArrayList<Carta> cartas, int posInicial) {
-		int i = 0;
-		int indiceMaior = 0;
-		int indiceEmpate = 0;
-		Carta maior = cartas.get(0);
-		for(Carta carta : cartas) {
-			if(!maior.ganhaDe(carta)) {
+	private int declaraVencedor(ArrayList<Carta> cartas, int posInicial, int qtdJogadores) {
+		int indiceMaior = posInicial;
+		Carta maior = cartas.get(posInicial);
+		for(int i = 1; i < qtdJogadores; ++i) {
+			int pos = (posInicial + i) % qtdJogadores;
+			Carta carta = cartas.get(pos);
+			if(carta.ganhaDe(maior)) {
+				indiceMaior = pos;
 				maior = carta;
-				indiceMaior = i;
 			}
-			++i;
 		}
-		i = 0;
 		// Confere se houve um empate
 		boolean houveEmpate = false;
-		for(Carta carta : cartas) {
-			if(i == indiceMaior) break;
+		int indiceEmpate = posInicial;
+		for(int i = 0; i < qtdJogadores; ++i) {
+			int pos = (posInicial + i) % qtdJogadores;
+			if(pos == indiceMaior) continue;
+			Carta carta = cartas.get(pos);
 			if(maior.getValor() == carta.getValor()) {
 				// A carta deve ser igual em valor, mas não superior em "poder" para que
 				// ocorra um empate
 				if(!maior.ganhaDe(carta)) {
 					houveEmpate = true;
-					indiceEmpate = i;
+					indiceEmpate = pos;
 					break;
 				}
 			}
-			++i;
 		}
 		return houveEmpate ? -1 * (indiceEmpate + 1) : indiceMaior;
 	}
@@ -140,6 +140,8 @@ public class Rodada {
 		int turno = 0;
 		boolean naoPodeTrucar = false;
 		ArrayList<Carta> cartasJogadas = new ArrayList<Carta>();
+		for(int i = 0; i < qtdJogadores; ++i)
+			cartasJogadas.add(null);
 
 		// Laço de execução da rodada, itera sobre os jogadores existentes
 		for(int i = 0; i < qtdJogadores; ++i) {
@@ -154,7 +156,7 @@ public class Rodada {
 			switch(resp) {
 				case ACEITA:
 					c = atual.jogaCarta(turno >= 1);
-					cartasJogadas.add(i, c);
+					cartasJogadas.set(posAtual, c);
 					break;
 				case AUMENTA:
 					proximo = jogadores.get(posProximo);
@@ -162,7 +164,7 @@ public class Rodada {
 					switch(res) {
 						case ACEITO:
 							c = atual.jogaCarta(turno >= 1);
-							cartasJogadas.add(i, c);
+							cartasJogadas.set(posAtual, c);
 							break;
 						case ATAQUE_CORRE:
 							terminaMao = true;
@@ -174,24 +176,20 @@ public class Rodada {
 					break;
 				case CORRE:
 					terminaMao = true;
-					proximo = jogadores.get((posAtual + 1) % qtdJogadores);
 					return posProximo; // a mão encerra com uma derrota para o jogador atual
 			}
 			turno++;
 		}
-		int indiceMaior = declaraVencedor(cartasJogadas, posInicial);
-		if(indiceMaior < 0) {
-			System.out.println("Empate!");
-			//A ideia é pegar o jogador a direita do que empatou,
-			//caso a soma do indiceEmpate com 1 supere 3, volta para o primeiro jogador
-			if(indiceMaior <= -4) indiceMaior = 0;
-			return indiceMaior;
+		int v = declaraVencedor(cartasJogadas, posInicial, qtdJogadores);
+		// Se o índice é negativo, houve um empate, que deve ser tratado pela mão
+		if(v < 0) {
+			System.out.printf("O jogador %s cangou...\n", jogadores.get(-1 * (v + 1)));
+			return v;
 		}
 
-		System.out.printf("O ganhador é o jogador %s!\n\n", jogadores.get(indiceMaior));
-		Carta cartaVencedora = cartasJogadas.get(indiceMaior);
-
+		System.out.printf("O jogador %s venceu a rodada!\n", jogadores.get(v));
+		Carta cartaVencedora = cartasJogadas.get(v);
 		this.cartaVencedora = cartaVencedora;
-		return indiceMaior;
+		return v;
 	}
 }
