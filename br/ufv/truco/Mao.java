@@ -65,7 +65,7 @@ public class Mao {
         int i = posInicial;
         while (rodadas.size() < 3 || vitorias1 == 2 || vitorias2 == 2) {
             Rodada rodada = new Rodada(trucado);
-            System.out.println("Rodada: " + ++conta_rodada);
+            System.out.println("\n=== RODADA " + ++conta_rodada + " ===\n\n");
             // O jogador que inicia a rodada é o último a ter ganhado
             i = rodada.executaRodada(jogadores, qtdJogadores, i);
             this.rodadas.add(rodada);
