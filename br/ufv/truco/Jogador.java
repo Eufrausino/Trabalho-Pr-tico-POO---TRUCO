@@ -114,12 +114,12 @@ public class Jogador {
         System.out.println(nome + " bate na mesa e grita: " + grito + "\n");
     }
 
-    public Carta jogaCarta(boolean podeEncoberta) {
+    public Carta jogaCarta(boolean podeEncoberta, boolean verCartas) {
         int i = 1, indiceEscolhida;
         System.out.printf("-- Jogar carta (%s) --\n", nome);
         StringBuilder s = new StringBuilder();
         for(Carta carta : cartas) {
-            s.append(i + ". [" + carta + "] ");
+            s.append(i + ". [" + (verCartas ? carta : "??") + "] ");
             ++i;
         }
         System.out.println(s.toString());

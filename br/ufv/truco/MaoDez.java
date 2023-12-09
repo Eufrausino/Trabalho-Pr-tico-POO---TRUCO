@@ -8,7 +8,7 @@ public class MaoDez extends Mao {
     }
 
     @Override
-    // Na mão de dez, o valor é sempre 4
+    // A mão de dez tem sempre valor 4
     protected int calculaValor(int nivelTruco) {
         return 4;
     }
@@ -16,6 +16,6 @@ public class MaoDez extends Mao {
     @Override
     // Na mão de dez, pedir truco não é permitido
     public int executaMao(int posInicial, int ganhadorAnterior, Baralho baralho) {
-        return executaMao(posInicial, ganhadorAnterior, true, baralho);
+        return executaMao(posInicial, ganhadorAnterior, true, true, baralho);
     }
 }

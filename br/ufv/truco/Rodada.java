@@ -150,12 +150,13 @@ public class Rodada {
 
 	// Executa a rodada, partindo de um jogador
 	public int executaRodada(int posInicial) {
-		return executaRodada(posInicial, false);
+		return executaRodada(posInicial, false, true);
 	}
 
 	// Executa a rodada, partindo de um jogador em particular, com a opção de
-	// poder trucar ou não (útil para a mão de dez)
-	public int executaRodada(int posInicial, boolean naoPodeTrucar) {
+	// poder trucar ou não (útil para a mão de dez) e de ver as cartas ou não
+	// (útil para a mão de ferro)
+	public int executaRodada(int posInicial, boolean naoPodeTrucar, boolean verCartas) {
 		// Laço de execução da rodada, itera sobre os jogadores existentes
 		for(int turno = 0; turno < numJogadores; ++turno) {
 			int posAtual = (posInicial + turno) % numJogadores;
@@ -167,7 +168,7 @@ public class Rodada {
 			Resposta resp = atual.age(naoPodeTrucar);
 			switch(resp) {
 				case ACEITA:
-					c = atual.jogaCarta(turno >= 1);
+					c = atual.jogaCarta(turno >= 1, verCartas);
 					cartasJogadas[posAtual] = c;
 					break;
 				case AUMENTA:
@@ -175,7 +176,7 @@ public class Rodada {
 					ResultadoTruco res = confrontoTruco(atual, proximo);
 					switch(res) {
 						case ACEITO:
-							c = atual.jogaCarta(turno >= 1);
+							c = atual.jogaCarta(turno >= 1, verCartas);
 							cartasJogadas[posAtual] = c;
 							break;
 						case ATAQUE_CORRE:

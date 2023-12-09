@@ -25,8 +25,11 @@ public class Jogo {
         while(equipe1.getPontos() < 12 && equipe2.getPontos() < 12) {
             // Cria uma nova mão
             Mao mao;
-            if(equipe1.getPontos() == 10 || equipe2.getPontos() == 10)
-                // Mão de dez, com algumas regras especiais
+            if(equipe1.getPontos() == 10 && equipe2.getPontos() == 10)
+                // A mão de ferro, mão tensa que decide o jogo
+                mao = new MaoFerro(equipe1, equipe2);
+            else if(equipe1.getPontos() == 10 || equipe2.getPontos() == 10)
+                // Uma mão de dez, com regras adicionais
                 mao = new MaoDez(equipe1, equipe2);
             else
                 // Simplesmente, uma mão convencional
