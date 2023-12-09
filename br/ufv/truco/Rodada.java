@@ -1,25 +1,39 @@
 package br.ufv.truco;
-import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Rodada {
-	private int trucado;
-	private boolean terminaMao = false;
+	// O "nível" de truco da rodada, de 0 a 3
+	private int nivelTruco;
+
+	// O desfecho de uma rodada pode decidir o desfecho da mão diretamente,
+	// esse atributo reflete isso
+	private boolean decisiva = false;
+
+	// A carta que venceu a rodada, nula em caso de empate ou vitória por truco
 	private Carta cartaVencedora = null;
 
-	public Rodada(int trucado) {
-		this.trucado = trucado;
+	// A quantidade de jogadores envolvidos na rodada
+	private int numJogadores;
+
+	// Os jogadores envolvidos na rodada e as cartas jogadas até o momento
+	private Jogador[] jogadores;
+	private Carta[] cartasJogadas;
+
+	public Rodada(int nivelInicialTruco, int numJogadores, Jogador[] jogadores) {
+		this.nivelTruco = nivelInicialTruco;
+		this.numJogadores = numJogadores;
+		this.jogadores = jogadores;
+		// Todas as cartas começam nulas, pois ainda não houve jogo
+		this.cartasJogadas = new Carta[numJogadores];
+		Arrays.fill(cartasJogadas, null);
 	}
 
-	public int getTrucado() {
-		return trucado;
+	public int getNivelTruco() {
+		return nivelTruco;
 	}
 
-	public void setTrucado(int trucado) {
-		this.trucado = trucado;
-	}
-
-	public boolean terminaMao() {
-		return terminaMao;
+	public boolean decideMao() {
+		return decisiva;
 	}
 
 	public Carta getCartaVencedora() {
@@ -28,10 +42,10 @@ public class Rodada {
 
 	// Pede truco, aumentando o valor da rodada. Retorna false caso não seja
 	// possível pedir truco; do contrário, efetua a operação e retorna true
-	private boolean trucar() {
-		if(trucado >= 4) return false;
-		++trucado;
-		switch(trucado) {
+	private boolean pedeTruco() {
+		if(nivelTruco >= 4) return false;
+		++nivelTruco;
+		switch(nivelTruco) {
 			case 1:
 				System.out.println("TRUCO!!!");
 				break;
@@ -53,7 +67,7 @@ public class Rodada {
 	// rodada, podendo também culminar no fim da partida
 	private ResultadoTruco confrontoTruco(Jogador ataque, Jogador defesa) {
 		// Caso não seja possível trucar, nada acontece
-		if(!trucar()) return ResultadoTruco.ACEITO;
+		if(!pedeTruco()) return ResultadoTruco.ACEITO;
 		while(true) {
 			// Resposta da defesa
 			while(true) {
@@ -62,7 +76,7 @@ public class Rodada {
 					case ACEITA:
 						return ResultadoTruco.ACEITO;
 					case AUMENTA:
-						if(!trucar()) {
+						if(!pedeTruco()) {
 							System.err.println("[!] Não pode aumentar! >:(");
 							continue;
 						}
@@ -79,7 +93,7 @@ public class Rodada {
 					case ACEITA:
 						return ResultadoTruco.ACEITO;
 					case AUMENTA:
-						if(!trucar()) {
+						if(!pedeTruco()) {
 							System.err.println("[!] Não pode aumentar! >:(");
 							continue;
 						}
@@ -94,12 +108,12 @@ public class Rodada {
 
 	// Determina o índice da maior carta no vetor das cartas jogadas; esse
 	// índice é utilizado para determinar o jogador vencedor
-	private int declaraVencedor(ArrayList<Carta> cartas, int posInicial, int qtdJogadores) {
+	private int declaraVencedor(int posInicial) {
 		int indiceMaior = posInicial;
-		Carta maior = cartas.get(posInicial);
-		for(int i = 1; i < qtdJogadores; ++i) {
-			int pos = (posInicial + i) % qtdJogadores;
-			Carta carta = cartas.get(pos);
+		Carta maior = cartasJogadas[posInicial];
+		for(int i = 1; i < numJogadores; ++i) {
+			int pos = (posInicial + i) % numJogadores;
+			Carta carta = cartasJogadas[pos];
 			if(carta.ganhaDe(maior)) {
 				indiceMaior = pos;
 				maior = carta;
@@ -108,10 +122,10 @@ public class Rodada {
 		// Confere se houve um empate
 		boolean houveEmpate = false;
 		int indiceEmpate = posInicial;
-		for(int i = 0; i < qtdJogadores; ++i) {
-			int pos = (posInicial + i) % qtdJogadores;
+		for(int i = 0; i < numJogadores; ++i) {
+			int pos = (posInicial + i) % numJogadores;
 			if(pos == indiceMaior) continue;
-			Carta carta = cartas.get(pos);
+			Carta carta = cartasJogadas[pos];
 			if(maior.getValor() == carta.getValor()) {
 				// A carta deve ser igual em valor, mas não superior em "poder" para que
 				// ocorra um empate
@@ -125,70 +139,67 @@ public class Rodada {
 		return houveEmpate ? -1 * (indiceEmpate + 1) : indiceMaior;
 	}
 
-	private void imprimeCartas(ArrayList<Jogador> jogadores, ArrayList<Carta> cartas) {
-		if(cartas.size() == 0) return;
+	private void imprimeCartas() {
 		System.out.println("== Cartas na mesa ==");
-		for(int i = 0; i < cartas.size(); ++i) {
-			System.out.printf("(%s) %s\n", jogadores.get(i), cartas.get(i));
+		for(int i = 0; i < numJogadores; ++i) {
+			if(cartasJogadas[i] != null)
+				System.out.printf("(%s) %s\n", jogadores[i], cartasJogadas[i]);
 		}
 		System.out.println();
 	}
 
 	// Executa a rodada com um certo vetor de jogadores (de tamanho qtdJogadores),
 	// começando de um índice em particular, retornando o índice do jogador ganhador
-	public int executaRodada(ArrayList<Jogador> jogadores, int qtdJogadores, int posInicial) {
+	public int executaRodada(int posInicial) {
 		int turno = 0;
 		boolean naoPodeTrucar = false;
-		ArrayList<Carta> cartasJogadas = new ArrayList<Carta>();
-		for(int i = 0; i < qtdJogadores; ++i)
-			cartasJogadas.add(null);
 
 		// Laço de execução da rodada, itera sobre os jogadores existentes
-		for(int i = 0; i < qtdJogadores; ++i) {
-			imprimeCartas(jogadores, cartasJogadas);
-			int posAtual = (posInicial + i) % qtdJogadores;
-			int posProximo = (posAtual + 1) % qtdJogadores;
-			Jogador atual = jogadores.get(posAtual), proximo;
-			if(i == qtdJogadores - 1) naoPodeTrucar = true;
+		for(int i = 0; i < numJogadores; ++i) {
+			int posAtual = (posInicial + i) % numJogadores;
+			int posProximo = (posAtual + 1) % numJogadores;
+			Jogador atual = jogadores[posAtual], proximo;
+			if(i == numJogadores - 1) naoPodeTrucar = true;
 
 			Carta c;
 			Resposta resp = atual.age(naoPodeTrucar);
 			switch(resp) {
 				case ACEITA:
 					c = atual.jogaCarta(turno >= 1);
-					cartasJogadas.set(posAtual, c);
+					cartasJogadas[posAtual] = c;
 					break;
 				case AUMENTA:
-					proximo = jogadores.get(posProximo);
+					proximo = jogadores[posProximo];
 					ResultadoTruco res = confrontoTruco(atual, proximo);
 					switch(res) {
 						case ACEITO:
 							c = atual.jogaCarta(turno >= 1);
-							cartasJogadas.set(posAtual, c);
+							cartasJogadas[posAtual] = c;
 							break;
 						case ATAQUE_CORRE:
-							terminaMao = true;
+							decisiva = true;
 							return posProximo; // a mão encerra com uma derrota para o ataque
 						case DEFESA_CORRE:
-							terminaMao = true;
+							decisiva = true;
 							return posAtual; // a mão encerra com uma vitória para o ataque
 					}
 					break;
 				case CORRE:
-					terminaMao = true;
+					decisiva = true;
 					return posProximo; // a mão encerra com uma derrota para o jogador atual
 			}
+			imprimeCartas();
 			turno++;
 		}
-		int v = declaraVencedor(cartasJogadas, posInicial, qtdJogadores);
+		int v = declaraVencedor(posInicial);
 		// Se o índice é negativo, houve um empate, que deve ser tratado pela mão
 		if(v < 0) {
-			System.out.printf("O jogador %s cangou...\n", jogadores.get(-1 * (v + 1)));
+			System.out.printf("O jogador %s cangou...\n", jogadores[-1 * (v + 1)]);
 			return v;
 		}
-
-		System.out.printf("O jogador %s venceu a rodada!\n", jogadores.get(v));
-		Carta cartaVencedora = cartasJogadas.get(v);
+		// Sendo o índice positivo, temos um claro vencedor
+		System.out.printf("O jogador %s venceu a rodada!\n", jogadores[v]);
+		Carta cartaVencedora = cartasJogadas[v];
 		this.cartaVencedora = cartaVencedora;
 		return v;
 	}
