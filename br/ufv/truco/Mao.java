@@ -60,44 +60,73 @@ public class Mao {
 
     // Executa uma mão, retornando o índice da equipe vencedora; ou seja,
     // 1 para a equipe 1 e 2 para a equipe 2
-    public int executaMao(int posInicial, Baralho baralho) {
+    public int executaMao(int posInicial, int ganhadorAnterior, Baralho baralho) {
         int nivelTruco = 0, numRodada = 0;
-        int vitorias1 = 0, vitorias2 = 0, empates = 0;
         distribuiCartas(baralho);
 
+        // Quando há um empate, existem duas possibilidades. A primeira é que
+        // houve alguma vitória anteriormente. Nesse caso, a primeira equipe a
+        // conquistar a vitória ganha. A segunda é que a rodada a resultar em
+        // um empate foi a primeira. Nesse caso, a próxima rodada ganha. A
+        // variável houveEmpate denota a ocorrência anterior de um empate, e
+        // primeiroGanhador contém o índice da primeira equipe a ganhar ou 0,
+        // caso não tenham havido vitórias.
+        int primeiroGanhador = 0;
+        boolean houveEmpate = false;
 
         int i = posInicial;
+        int vitorias1 = 0, vitorias2 = 0;
         while (numRodada < 3 && vitorias1 < 2 && vitorias2 < 2) {
+            ++numRodada;
             Rodada rodada = new Rodada(nivelTruco, numJogadores, jogadores);
-            System.out.println("\n=== RODADA " + ++numRodada + " ===\n");
+            System.out.printf("\n=== RODADA %d ===\n\n", numRodada);
             // O jogador que inicia a rodada é o último a ter ganhado
             i = rodada.executaRodada(i);
             this.rodadas.add(rodada);
 
             // Determina-se quantos pontos a mão vale a partir de cada rodada
-            if(nivelTruco < rodada.getNivelTruco()) {
-                nivelTruco = rodada.getNivelTruco();
-                valor = calculaValor(nivelTruco);
+            int rodadaNivel = rodada.getNivelTruco();
+            if(nivelTruco < rodadaNivel) {
+                nivelTruco = rodadaNivel;
+                this.valor = calculaValor(nivelTruco);
             }
 
-            // Pode ser que a rodada tenha decidido o desfecho da mão (truco)
+            // Pode ser que a rodada tenha decidido o desfecho da mão; isso
+            // acontece caso alguém tenha corrido
             if(rodada.decideMao()) {
                 // Índices pares são vitórias da equipe 1 e os ímpares, da 2
+                // (uma rodada decisiva jamais será um empate)
                 if(i % 2 == 0) return 1;
                 else return 2;
             }
+
             // Índices negativos denotam empates, os pares denotam uma
             // vitória da equipe 1 e os ímpares, uma da equipe 2
             if(i < 0) {
                 i = -1 * (i + 1); // próximo jogador é o responsável pelo empate
-                ++empates;
+                houveEmpate = true;
+                if(primeiroGanhador != 0)
+                    // Houve pelo menos uma vitória anteriormente. A equipe
+                    // que conquistou a primeira vitória ganha
+                    return primeiroGanhador;
             } else if(i % 2 == 0) {
                 ++vitorias1;
+                if(primeiroGanhador == 0)
+                    primeiroGanhador = 1;
+                // Se a primeira rodada foi um empate, a equipe 1 ganhou
+                if(houveEmpate) return 1;
             } else {
                 ++vitorias2;
+                if(primeiroGanhador == 0)
+                    primeiroGanhador = 2;
+                // Se a primeira rodada foi um empate, a equipe 2 ganhou
+                if(houveEmpate) return 2;
             }
         }
-        // NOTA os empates devem ser levados em consideração
+        // Se TODAS as rodadas foram empates, ganha a equipe que ganhou a
+        // última mão
+        if(vitorias1 == 0 && vitorias2 == 0)
+            return ganhadorAnterior;
         return vitorias1 > vitorias2 ? 1 : 2;
     }
 }

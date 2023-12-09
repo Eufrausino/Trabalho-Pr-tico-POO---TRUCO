@@ -16,6 +16,7 @@ public class Jogo {
     }
 
     public int executajogo(Baralho baralho) {
+        int eq = 1;
         int conta = 1;
         int jogadorInicial = 0;
         equipe1.reiniciaPontos();
@@ -24,7 +25,7 @@ public class Jogo {
         while(equipe1.getPontos() < 12 && equipe2.getPontos() < 12) {
             // Executa uma mão convencional com as equipes
             Mao mao = new Mao(equipe1, equipe2);
-            int eq = mao.executaMao(jogadorInicial, baralho);
+            eq = mao.executaMao(jogadorInicial, eq, baralho);
             ++jogadorInicial;
             maos.add(mao);
 
