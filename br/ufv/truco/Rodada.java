@@ -148,18 +148,20 @@ public class Rodada {
 		System.out.println();
 	}
 
-	// Executa a rodada com um certo vetor de jogadores (de tamanho qtdJogadores),
-	// começando de um índice em particular, retornando o índice do jogador ganhador
+	// Executa a rodada, partindo de um jogador
 	public int executaRodada(int posInicial) {
-		int turno = 0;
-		boolean naoPodeTrucar = false;
+		return executaRodada(posInicial, false);
+	}
 
+	// Executa a rodada, partindo de um jogador em particular, com a opção de
+	// poder trucar ou não (útil para a mão de dez)
+	public int executaRodada(int posInicial, boolean naoPodeTrucar) {
 		// Laço de execução da rodada, itera sobre os jogadores existentes
-		for(int i = 0; i < numJogadores; ++i) {
-			int posAtual = (posInicial + i) % numJogadores;
+		for(int turno = 0; turno < numJogadores; ++turno) {
+			int posAtual = (posInicial + turno) % numJogadores;
 			int posProximo = (posAtual + 1) % numJogadores;
 			Jogador atual = jogadores[posAtual], proximo;
-			if(i == numJogadores - 1) naoPodeTrucar = true;
+			if(turno == numJogadores - 1) naoPodeTrucar = true;
 
 			Carta c;
 			Resposta resp = atual.age(naoPodeTrucar);
@@ -189,7 +191,6 @@ public class Rodada {
 					return posProximo; // a mão encerra com uma derrota para o jogador atual
 			}
 			imprimeCartas();
-			turno++;
 		}
 		int v = declaraVencedor(posInicial);
 		// Se o índice é negativo, houve um empate, que deve ser tratado pela mão

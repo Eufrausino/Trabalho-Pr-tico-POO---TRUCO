@@ -2,10 +2,6 @@ package br.ufv.truco;
 
 public class Truco {
 	public static void main(String[] args) {
-
-		// TODO TelaDeJogo
-		// instanciando a tela do jogo
-
 		// instanciando os jogadores
 		Jogador jogador1 = new Jogador("J1");
 		Jogador jogador2 = new Jogador("J2");
