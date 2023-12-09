@@ -2,8 +2,8 @@ package br.ufv.truco;
 import java.util.ArrayList;
 
 public class Mao {
-    private int valor = 2;
     private int numJogadores;
+    private int valor = calculaValor(0);
     private ArrayList<Rodada> rodadas = new ArrayList<>();
     private Jogador[] jogadores;
 
@@ -59,8 +59,16 @@ public class Mao {
     }
 
     // Executa uma mão, retornando o índice da equipe vencedora; ou seja,
-    // 1 para a equipe 1 e 2 para a equipe 2
+    // 1 para a equipe 1 e 2 para a equipe 2.
     public int executaMao(int posInicial, int ganhadorAnterior, Baralho baralho) {
+        // Obrigado por não ter valores padrão Java! :)
+        return executaMao(posInicial, ganhadorAnterior, false, baralho);
+    }
+
+    // Executa uma mão, retornando o índice da equipe vencedora; ou seja,
+    // 1 para a equipe 1 e 2 para a equipe 2. Tem a opção de poder ou não
+    // trucar (útil para a mão de dez)
+    public int executaMao(int posInicial, int ganhadorAnterior, boolean naoPodeTrucar, Baralho baralho) {
         int nivelTruco = 0, numRodada = 0;
         distribuiCartas(baralho);
 
@@ -74,14 +82,14 @@ public class Mao {
         int primeiroGanhador = 0;
         boolean houveEmpate = false;
 
-        int i = posInicial;
+        int i = posInicial % numJogadores;
         int vitorias1 = 0, vitorias2 = 0;
         while (numRodada < 3 && vitorias1 < 2 && vitorias2 < 2) {
             ++numRodada;
             Rodada rodada = new Rodada(nivelTruco, numJogadores, jogadores);
             System.out.printf("\n=== RODADA %d ===\n\n", numRodada);
             // O jogador que inicia a rodada é o último a ter ganhado
-            i = rodada.executaRodada(i);
+            i = rodada.executaRodada(i, naoPodeTrucar);
             this.rodadas.add(rodada);
 
             // Determina-se quantos pontos a mão vale a partir de cada rodada

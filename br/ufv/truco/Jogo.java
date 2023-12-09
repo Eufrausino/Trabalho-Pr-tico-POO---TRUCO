@@ -23,8 +23,15 @@ public class Jogo {
         equipe2.reiniciaPontos();
         // Enquanto as equipes tiverem menos de 12 pontos, o jogo continua
         while(equipe1.getPontos() < 12 && equipe2.getPontos() < 12) {
-            // Executa uma mão convencional com as equipes
-            Mao mao = new Mao(equipe1, equipe2);
+            // Cria uma nova mão
+            Mao mao;
+            if(equipe1.getPontos() == 10 || equipe2.getPontos() == 10)
+                // Mão de dez, com algumas regras especiais
+                mao = new MaoDez(equipe1, equipe2);
+            else
+                // Simplesmente, uma mão convencional
+                mao = new Mao(equipe1, equipe2);
+
             eq = mao.executaMao(jogadorInicial, eq, baralho);
             ++jogadorInicial;
             maos.add(mao);
