@@ -34,7 +34,7 @@ public class Mao {
     }
 
     // Determina a quantidade de pontos a partir de um "nível" de truco
-    private int calculaValor(int nivelTruco) {
+    protected int calculaValor(int nivelTruco) {
         if(nivelTruco <= 1) return 2 + nivelTruco * 2;
         else return 4 + nivelTruco * 2;
     }
