@@ -53,6 +53,7 @@ public class Jogador {
                     resp = scan.nextInt();
                 } catch(InputMismatchException ex) {
                     System.err.println("[!] Inteiro inválido! Tente novamente");
+                    scan.nextLine(); // remove '\n' sobressalente
                     continue;
                 }
                 switch(resp) {
@@ -77,6 +78,7 @@ public class Jogador {
                     resp = scan.nextInt();
                 } catch(InputMismatchException ex) {
                     System.err.println("[!] Inteiro inválido! Tente novamente");
+                    scan.nextLine(); // remove '\n' sobressalente
                     continue;
                 }
                 switch(resp) {
@@ -106,6 +108,7 @@ public class Jogador {
                 resp = scan.nextInt();
             } catch(InputMismatchException ex) {
                 System.err.println("[!] Inteiro inválido! Tente novamente");
+				scan.nextLine(); // remove '\n' sobressalente
                 continue;
             }
             switch(resp) {
@@ -140,7 +143,7 @@ public class Jogador {
     // Pede ao usuário que escolha uma carta para jogar
     public Carta jogaCarta(boolean podeEncoberta, boolean verCartas) {
         int i = 1, indiceEscolhida;
-        System.out.printf("-- Jogar carta (%s) --\n", nome);
+        System.out.printf("\n-- Jogar carta (%s) --\n", nome);
         StringBuilder s = new StringBuilder();
         for(Carta carta : cartas) {
             s.append(i + ". [" + (verCartas ? carta : "??") + "] ");
@@ -153,6 +156,7 @@ public class Jogador {
                 indiceEscolhida = scan.nextInt();
             } catch(InputMismatchException ex) {
                 System.err.println("[!] Inteiro inválido! Tente novamente");
+				scan.nextLine(); // remove '\n' sobressalente
                 continue;
             }
             if(indiceEscolhida >= 1 && indiceEscolhida <= i) break;
@@ -168,6 +172,7 @@ public class Jogador {
                     resp = scan.nextInt();
                 } catch(InputMismatchException ex) {
                     System.err.println("[!] Inteiro inválido! Tente novamente");
+                    scan.nextLine(); // remove '\n' sobressalente
                     continue;
                 }
                 switch(resp) {
