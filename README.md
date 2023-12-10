@@ -1,6 +1,6 @@
 # Links para o download de dependências
 
-Nos links seguintes você encontrará o (JUnit)[https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar] e o (hamcrest)[http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar].
+Nos links seguintes você encontrará o [JUnit](https://repo1.maven.org/maven2/junit/junit/4.13.2/junit-4.13.2.jar) e o [hamcrest](http://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar).
 Ambos são necessários para a execução dos testes. Baixe-os e coloque-os na pasta `deps` para que o script `test.sh` funcione corretamente.
 
 # Trabalho-Pratico-POO---TRUCO
