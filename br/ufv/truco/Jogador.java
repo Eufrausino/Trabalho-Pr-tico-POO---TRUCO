@@ -1,6 +1,7 @@
 package br.ufv.truco;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class Jogador {
@@ -10,7 +11,7 @@ public class Jogador {
 
     private boolean ehMaquina = false;
 
-    private Scanner scan = new Scanner(System.in);
+    private Scanner scan = Utils.scan;
 
     public Jogador(String nome) {
         this.nome = nome;
@@ -42,12 +43,18 @@ public class Jogador {
     // opções incluem jogar carta, pedir truco (se possível), gritar ou
     // correr.
     public Resposta age(boolean naoPodeTrucar) {
+        int resp;
         System.out.printf("== Jogador (%s) ==\n", nome);
         if(!naoPodeTrucar) {
             while(true) {
                 System.out.println("Qual ação você deseja fazer?");
                 System.out.print("(1) jogar carta, (2) pedir truco, (3) gritar, (4) correr => ");
-                int resp = scan.nextInt();
+                try {
+                    resp = scan.nextInt();
+                } catch(InputMismatchException ex) {
+                    System.err.println("[!] Inteiro inválido! Tente novamente");
+                    continue;
+                }
                 switch(resp) {
                     case 1:
                         return Resposta.ACEITA;
@@ -66,7 +73,12 @@ public class Jogador {
             while(true) {
                 System.out.println("Qual ação você deseja fazer?");
                 System.out.print("(1) jogar carta, (2) gritar, (3) correr => ");
-                int resp = scan.nextInt();
+                try {
+                    resp = scan.nextInt();
+                } catch(InputMismatchException ex) {
+                    System.err.println("[!] Inteiro inválido! Tente novamente");
+                    continue;
+                }
                 switch(resp) {
                     case 1:
                         return Resposta.ACEITA;
@@ -89,7 +101,13 @@ public class Jogador {
             System.out.printf("== Responder (%s) ==\n", nome);
             System.out.println("Corre, aceita ou pede mais?");
             System.out.print("(1) correr, (2) aceitar, (3) pedir mais => ");
-            int resp = scan.nextInt();
+            int resp;
+            try {
+                resp = scan.nextInt();
+            } catch(InputMismatchException ex) {
+                System.err.println("[!] Inteiro inválido! Tente novamente");
+                continue;
+            }
             switch(resp) {
                 case 1:
                     System.out.println("Correu!");
@@ -131,7 +149,12 @@ public class Jogador {
         System.out.println(s.toString());
         while(true) {
             System.out.print("Carta a jogar => ");
-            indiceEscolhida = scan.nextInt();
+            try {
+                indiceEscolhida = scan.nextInt();
+            } catch(InputMismatchException ex) {
+                System.err.println("[!] Inteiro inválido! Tente novamente");
+                continue;
+            }
             if(indiceEscolhida >= 1 && indiceEscolhida <= i) break;
             else System.err.println("[!] Carta inválida! Escolha novamente");
         }
@@ -140,7 +163,13 @@ public class Jogador {
         if(podeEncoberta) {
             while(continua) {
                 System.out.print("(1) jogar normalmente, (2) jogar encoberta => ");
-                int resp = scan.nextInt();
+                int resp;
+                try {
+                    resp = scan.nextInt();
+                } catch(InputMismatchException ex) {
+                    System.err.println("[!] Inteiro inválido! Tente novamente");
+                    continue;
+                }
                 switch(resp) {
                     case 1:
                         c.setEncoberta(false);

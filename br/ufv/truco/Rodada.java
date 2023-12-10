@@ -140,11 +140,15 @@ public class Rodada {
 	}
 
 	private void imprimeCartas() {
+		boolean temCartas = false;
 		System.out.println("== Cartas na mesa ==");
 		for(int i = 0; i < numJogadores; ++i) {
-			if(cartasJogadas[i] != null)
+			if(cartasJogadas[i] != null) {
+				temCartas = true;
 				System.out.printf("(%s) %s\n", jogadores[i], cartasJogadas[i]);
+			}
 		}
+		if(!temCartas) System.out.println("Mesa vazia");
 		System.out.println();
 	}
 
@@ -157,9 +161,10 @@ public class Rodada {
 	// poder trucar ou não (útil para a mão de dez) e de ver as cartas ou não
 	// (útil para a mão de ferro)
 	public int executaRodada(int posInicial, boolean naoPodeTrucar, boolean verCartas,
-	boolean naoPodeEncobrir) {
+		boolean naoPodeEncobrir) {
 		// Laço de execução da rodada, itera sobre os jogadores existentes
 		for(int turno = 0; turno < numJogadores; ++turno) {
+			imprimeCartas();
 			int posAtual = (posInicial + turno) % numJogadores;
 			int posProximo = (posAtual + 1) % numJogadores;
 			Jogador atual = jogadores[posAtual], proximo;
@@ -182,17 +187,20 @@ public class Rodada {
 							break;
 						case ATAQUE_CORRE:
 							decisiva = true;
+							Utils.passarProProximo();
 							return posProximo; // a mão encerra com uma derrota para o ataque
 						case DEFESA_CORRE:
 							decisiva = true;
+							Utils.passarProProximo();
 							return posAtual; // a mão encerra com uma vitória para o ataque
 					}
 					break;
 				case CORRE:
 					decisiva = true;
+					Utils.passarProProximo();
 					return posProximo; // a mão encerra com uma derrota para o jogador atual
 			}
-			imprimeCartas();
+			Utils.passarProProximo();
 		}
 		int v = declaraVencedor(posInicial);
 		// Se o índice é negativo, houve um empate, que deve ser tratado pela mão

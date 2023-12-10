@@ -62,8 +62,7 @@ public class Mao {
     // 1 para a equipe 1 e 2 para a equipe 2.
     public int executaMao(int posInicial, int ganhadorAnterior, Baralho baralho) {
         // Obrigado por não ter valores padrão Java! :)
-        return executaMao(posInicial, ganhadorAnterior, false, true, baralho,
-        false);
+        return executaMao(posInicial, ganhadorAnterior, false, true, baralho, false);
     }
 
     // Executa uma mão, retornando o índice da equipe vencedora; ou seja,
