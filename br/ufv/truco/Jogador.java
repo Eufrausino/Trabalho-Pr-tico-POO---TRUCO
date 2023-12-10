@@ -25,6 +25,10 @@ public class Jogador {
     public String getNome() {
         return nome;
     }
+    
+    public ArrayList<Carta> getCartas(){
+    	return cartas;
+    }
 
     @Override
     public String toString() {

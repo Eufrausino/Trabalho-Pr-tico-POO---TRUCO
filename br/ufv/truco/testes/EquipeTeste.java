@@ -1,6 +1,8 @@
 package br.ufv.truco.testes;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -23,8 +25,8 @@ public class EquipeTeste {
 		Equipe equipe1 = new Equipe(new Jogador("J1"));
 		Equipe equipe2 = new Equipe(new Jogador("J3"), new Jogador("J4"));
 		
-		assertEquals(false, equipe1.ehDupla());
-		assertEquals(true, equipe2.ehDupla());
+		assertFalse(equipe1.ehDupla());
+		assertTrue(equipe2.ehDupla());
 	}
 	
 	@Test
