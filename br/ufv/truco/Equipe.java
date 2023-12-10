@@ -17,6 +17,14 @@ public class Equipe {
         pontos = 0;
     }
 
+    @Override
+    public String toString() {
+        String equipe = jogador1.toString();
+        if(jogador2 != null)
+            equipe += " e " + jogador2.toString();
+        return equipe;
+    }
+
     public Jogador getJogador1() {
         return jogador1;
     }

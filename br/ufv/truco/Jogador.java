@@ -38,6 +38,9 @@ public class Jogador {
         cartas.add(carta);
     }
 
+    // Pede ao usuário que escolha uma ação para que o jogador tome. As
+    // opções incluem jogar carta, pedir truco (se possível), gritar ou
+    // correr.
     public Resposta age(boolean naoPodeTrucar) {
         System.out.printf("== Jogador (%s) ==\n", nome);
         if(!naoPodeTrucar) {
@@ -79,6 +82,7 @@ public class Jogador {
         }
     }
 
+    // Pede ao usuário que escolha como responder a um desafio de truco
     public Resposta responde() {
         if(ehMaquina) return Resposta.ACEITA; // mudar isso
         while(true) {
@@ -102,6 +106,7 @@ public class Jogador {
         }
     }
 
+    // Simplesmente, grita da maneira especificada pelo usuário
     public void grita() {
         String grito;
         if(ehMaquina) {
@@ -114,6 +119,7 @@ public class Jogador {
         System.out.println(nome + " bate na mesa e grita: " + grito + "\n");
     }
 
+    // Pede ao usuário que escolha uma carta para jogar
     public Carta jogaCarta(boolean podeEncoberta, boolean verCartas) {
         int i = 1, indiceEscolhida;
         System.out.printf("-- Jogar carta (%s) --\n", nome);
