@@ -88,7 +88,7 @@ public class Mao {
         while (numRodada < 3 && vitorias1 < 2 && vitorias2 < 2) {
             ++numRodada;
             Rodada rodada = new Rodada(nivelTruco, numJogadores, jogadores);
-            System.out.printf("\n=== RODADA %d ===\n\n", numRodada);
+            System.out.printf("\n=== RODADA %d ===\n", numRodada);
             // O jogador que inicia a rodada é o último a ter ganhado
             i = rodada.executaRodada(i, naoPodeTrucar, verCartas, naoPodeEncobrir);
             this.rodadas.add(rodada);

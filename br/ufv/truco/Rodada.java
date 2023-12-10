@@ -82,6 +82,7 @@ public class Rodada {
 						}
 						break;
 					case CORRE:
+						--nivelTruco;
 						return ResultadoTruco.DEFESA_CORRE;
 				}
 				break;
@@ -99,6 +100,7 @@ public class Rodada {
 						}
 						break;
 					case CORRE:
+						--nivelTruco;
 						return ResultadoTruco.ATAQUE_CORRE;
 				}
 				break;
@@ -164,6 +166,7 @@ public class Rodada {
 		boolean naoPodeEncobrir) {
 		// Laço de execução da rodada, itera sobre os jogadores existentes
 		for(int turno = 0; turno < numJogadores; ++turno) {
+			System.out.println();
 			imprimeCartas();
 			int posAtual = (posInicial + turno) % numJogadores;
 			int posProximo = (posAtual + 1) % numJogadores;
@@ -202,6 +205,8 @@ public class Rodada {
 			}
 			Utils.passarProProximo();
 		}
+		System.out.println("\n== RODADA ANTERIOR ==\n");
+		imprimeCartas();
 		int v = declaraVencedor(posInicial);
 		// Se o índice é negativo, houve um empate, que deve ser tratado pela mão
 		if(v < 0) {
