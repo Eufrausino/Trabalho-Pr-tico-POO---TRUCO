@@ -7,5 +7,5 @@ if [ $# -lt 1 ]; then
     echo "Uso: $0 <nome-do-teste>"
     exit 1
 fi
-javac -cp deps/junit-4.13.2.jar:deps/hamcrest-core-1.3.jar:out -d out-test br/ufv/truco/testes/*.java
-java  -cp deps/junit-4.13.2.jar:deps/hamcrest-core-1.3.jar:out:out-test "br.ufv.truco.testes.$1"
+javac -cp deps/junit-4.13.2.jar:deps/hamcrest-1.3.jar:out -d out-test br/ufv/truco/testes/*.java
+java  -cp deps/junit-4.13.2.jar:deps/hamcrest-1.3.jar:out:out-test org.junit.runner.JUnitCore "br.ufv.truco.testes.$1"
