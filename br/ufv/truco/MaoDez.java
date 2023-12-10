@@ -16,6 +16,7 @@ public class MaoDez extends Mao {
     @Override
     // Na mão de dez, pedir truco não é permitido
     public int executaMao(int posInicial, int ganhadorAnterior, Baralho baralho) {
-        return executaMao(posInicial, ganhadorAnterior, true, true, baralho);
+        return executaMao(posInicial, ganhadorAnterior, true, true, baralho, 
+        true);
     }
 }

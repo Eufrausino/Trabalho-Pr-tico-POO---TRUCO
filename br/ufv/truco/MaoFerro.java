@@ -17,6 +17,7 @@ public class MaoFerro extends Mao {
     // Na mão de ferro, pedir truco não é permitido e os jogadores não
     // pode ver as suas cartas antes de jogar
     public int executaMao(int posInicial, int ganhadorAnterior, Baralho baralho) {
-        return executaMao(posInicial, ganhadorAnterior, true, false, baralho);
+        return executaMao(posInicial, ganhadorAnterior, true, false, baralho,
+         true);
     }
 }
