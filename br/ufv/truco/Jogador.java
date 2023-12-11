@@ -25,8 +25,8 @@ public class Jogador {
     public String getNome() {
         return nome;
     }
-    
-    public ArrayList<Carta> getCartas(){
+
+    public ArrayList<Carta> getCartas() {
     	return cartas;
     }
 
